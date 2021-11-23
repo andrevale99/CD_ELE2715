@@ -2,6 +2,8 @@
 
 Repositório para o estudo da linguagem VHDL. 
 
+Muitos dos códigos podem haver erros de lógica, portanto, verifique antes de utiliza-lo em alguma simulação.
+
 ## Pré-Requisitos
 
 * Os arquivos criados foram compilados pelo [GHDL](http://ghdl.free.fr/); 
@@ -29,4 +31,6 @@ Caso queira verificar a simulção basta rodar o comando
 * gtkwave *Nome_da_simulacao*
 
 Um exemplo da compilação dos arquivos pode ser verificado na pasta [Example](VHDL/Example/).
+
+
    
