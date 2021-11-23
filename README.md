@@ -27,4 +27,6 @@ Para compilar os arquivos, basta seguir a ordem:
 Caso queira verificar a simulção basta rodar o comando
 
 * gtkwave *Nome_da_simulacao*
+
+Um exemplo da compilação dos arquivos pode ser verificado na pasta [Example](VHDL/Example/).
    
