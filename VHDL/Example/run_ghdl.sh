@@ -1,16 +1,19 @@
+#!/bin/bash
+# Ordem para compilar o arquivo VHDL
+
 TOTAL=$#
 
 if [ $1 == "-h" ] || [ $1 == "--help" ]; then
     echo "AINDA VOU FAZER"
 
 else 
-    ghdl -s $1
-    ghdl -a $1
+    ghdl -s and.vhd
+    ghdl -a and.vhd
 
-    ghdl -s $2
-    ghdl -a $2
+    ghdl -s and_tb.vhd
+    ghdl -a and_tb.vhd
 
-    ghdl -e $3
-    ghdl -r $3 --vcd=$4
+    ghdl -e ckt_tb
+    ghdl -r ckt_tb --vcd=Simulacao
 
 fi
