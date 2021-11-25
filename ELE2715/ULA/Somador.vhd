@@ -6,7 +6,7 @@ entity SCOMP is
 			S, Co : out bit);
 end SCOMP;
 
-architecture ckt of ADD8 is
+architecture ckt of SCOMP is
 
 	begin
 		S <= A xor B xor Ci;
