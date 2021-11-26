@@ -5,18 +5,15 @@ entity ci_7432 is
 		y : out bit_vector(3 downto 0));
 end ci_7432;
 
-architecture ckt_7432 of ci_7432 is
+architecture ckt of ci_7432 is
 
 	begin
 
-		process(a, b)
-		begin
-
-			y(0) <= a(0) or b(0);
-			y(1) <= a(1) or b(1);
-			y(2) <= a(2) or b(2);
-			y(3) <= a(3) or b(3);
+		y(0) <= a(0) or b(0);
+		y(1) <= a(1) or b(1);
+		y(2) <= a(2) or b(2);
+		y(3) <= a(3) or b(3);
 			
-		end process;
+		
 
-end ckt_7432;
+end ckt;

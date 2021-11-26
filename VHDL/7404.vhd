@@ -5,20 +5,17 @@ entity ci_7404 is
 		 y : out bit_vector(5 downto 0));
 end ci_7404;
 
-architecture ckt_7404 of ci_7404 is
+architecture ckt of ci_7404 is
 
 	begin 
 
-	process(a)
-	begin
+	y(0) <= not a(0);
+	y(1) <= not a(1);
+	y(2) <= not a(2);
+	y(3) <= not a(3);
+	y(4) <= not a(4);
+	y(5) <= not a(5);
 
-		y(0) <= not a(0);
-		y(1) <= not a(1);
-		y(2) <= not a(2);
-		y(3) <= not a(3);
-		y(4) <= not a(4);
-		y(5) <= not a(5);
+	
 
-	end process;
-
-end ckt_7404;
+end ckt;
