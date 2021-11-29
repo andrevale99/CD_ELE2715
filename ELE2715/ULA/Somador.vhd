@@ -22,7 +22,8 @@ entity ADD8 is
 	port (A, B : in bit_vector(7 downto 0);
 			Ci : in bit;
 			Co : out bit;
-			S : out bit_vector(7 downto 0));
+			S : out bit_vector(7 downto 0);
+			Z : out bit);
 end ADD8;
 
 architecture ckt of ADD8 is
