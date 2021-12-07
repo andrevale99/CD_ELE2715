@@ -5,3 +5,4 @@ work-*
 git_token.txt
 
 TESTBENCH.vhd
+ELE2715/Contador_Inteligente/TESTBENCH.vhd
