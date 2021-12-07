@@ -28,13 +28,13 @@ architecture ckt of mux2b8 is
 
 	begin
 
-		Q7 : mux2b port map (s, i(7), i(6), y(7));
-		Q6 : mux2b port map (s, i(6), i(5), y(6));
-		Q5 : mux2b port map (s, i(5), i(4), y(5));
-		Q4 : mux2b port map (s, i(4), i(3), y(4));
-		Q3 : mux2b port map (s, i(3), i(2), y(3));
-		Q2 : mux2b port map (s, i(2), i(1), y(2));
-		Q1 : mux2b port map (s, i(1), i(0), y(1));
-		Q0 : mux2b port map (s, i(0), '0', y(0));
+		Q7 : mux2b port map (s, i(7), '0', y(7));
+		Q6 : mux2b port map (s, i(6), i(7), y(6));
+		Q5 : mux2b port map (s, i(5), i(6), y(5));
+		Q4 : mux2b port map (s, i(4), i(5), y(4));
+		Q3 : mux2b port map (s, i(3), i(4), y(3));
+		Q2 : mux2b port map (s, i(2), i(3), y(2));
+		Q1 : mux2b port map (s, i(1), i(2), y(1));
+		Q0 : mux2b port map (s, i(0), i(1), y(0));
 
 end ckt;
