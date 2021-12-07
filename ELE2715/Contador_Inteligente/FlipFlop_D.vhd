@@ -1,18 +1,23 @@
-entity latch_d is
-	port(d, en : in bit;
-			q, qn : inout bit);
-end latch_d;
+entity FFD is
+	port (clk ,d,set ,clr: in bit;
+			q: out bit);
+end FFD;
 
-architecture ckt of latch_d is
-
-	signal s : bit;
-	signal r : bit;
-
+architecture CKT of FFD is
+	
+signal qs: bit;
+begin
+	process(ck ,set ,clr
 	begin
-		s <= d nand en;
-		r <= not d nand en;
 
-		q <= not s or not qn;
-		qn <= not r or not q;
+		if set = ’0’ then qs <= ’1’;
+		elsif clr = ’0’ then qs <= ’0’;
+		elsif ck=’1’ and ck ’event then
+			qs <= d;
+	end if;
 
-end ckt;
+	end process;
+
+	q <= qs;
+
+end CKT;
