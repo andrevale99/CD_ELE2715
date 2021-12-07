@@ -4,40 +4,44 @@ end tb;
 architecture bench of tb is
 
 	--COMPONENTES
-	component COMP_8BITS is
-		port (A, B : in bit_vector(7 downto 0);
-			AigB, AmaiorB, AmenorB : out bit);
+	component TC is
+		port(ENTRADA : in bit_vector(3 downto 0);
+				S : in bit;
+				Y : out bit);
 	end component;
 	
 
 	--SINAIS
-	signal A : bit_vector(7 downto 0);
-	signal B : bit_vector(7 downto 0);
+	signal A : bit_vector(3 downto 0);
+	signal SEL : bit;
 	
 
 	--for DESL_LEFT : SHFTL use entity work.SHFTL;
-	for COMP : COMP_8BITS use entity work.COMP_8BITS;
+	for FINAL : TC use entity work.TC;
 
 	begin
 
 	--DESL_LEFT : SHFTL port map (I => A, S => SEL, Y => F);
-	COMP : COMP_8BITS port map (A => A, B => B);
+	FINAL : TC port map (ENTRADA => A, S => SEL);
 
 	process
 	begin
-		
-		A <= "00000000";
-		B <= "00000000";
+
+		A <= "1111";
+		SEL <= '0';
 		wait for 10 ns;
 
-		A <= "00010000";
-		B <= "00000000";
-		wait for 10 ns;
-		
-		A <= "00010000";
-		B <= "00100000";
+		A <= "1111";
+		SEL <= '1';
 		wait for 10 ns;
 
+		A <= "0000";
+		SEL <= '0';
+		wait for 10 ns;
+
+		A <= "0000";
+		SEL <= '1';
+		wait for 10 ns;
 
 		wait;
 		end process;
