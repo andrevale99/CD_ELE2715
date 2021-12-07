@@ -3,3 +3,5 @@ work-*
 *.simulation
 
 git_token.txt
+
+TESTBENCH.vhd
