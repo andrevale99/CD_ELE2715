@@ -122,58 +122,58 @@
       <a name="text" val="s"/>
       <a name="font" val="SansSerif bold 20"/>
     </comp>
-    <comp lib="6" loc="(657,159)" name="Text">
-      <a name="text" val="co"/>
-      <a name="font" val="SansSerif bold 20"/>
-    </comp>
-    <comp lib="6" loc="(41,56)" name="Text">
-      <a name="text" val="A"/>
-      <a name="font" val="SansSerif bold 20"/>
-    </comp>
-    <comp lib="0" loc="(80,90)" name="Pin">
+    <comp lib="0" loc="(80,50)" name="Pin">
       <a name="tristate" val="false"/>
     </comp>
     <comp lib="1" loc="(570,150)" name="OR Gate">
       <a name="inputs" val="3"/>
     </comp>
-    <comp lib="1" loc="(420,330)" name="XOR Gate">
+    <comp lib="1" loc="(520,350)" name="XOR Gate">
       <a name="inputs" val="2"/>
+    </comp>
+    <comp lib="6" loc="(41,56)" name="Text">
+      <a name="text" val="A"/>
+      <a name="font" val="SansSerif bold 20"/>
     </comp>
     <comp lib="0" loc="(80,170)" name="Pin">
       <a name="tristate" val="false"/>
     </comp>
-    <comp lib="1" loc="(410,70)" name="AND Gate">
+    <comp lib="1" loc="(410,230)" name="AND Gate">
       <a name="inputs" val="2"/>
     </comp>
-    <comp lib="0" loc="(80,50)" name="Pin">
+    <comp lib="0" loc="(80,90)" name="Pin">
       <a name="tristate" val="false"/>
     </comp>
-    <comp lib="1" loc="(520,350)" name="XOR Gate">
-      <a name="inputs" val="2"/>
-    </comp>
-    <comp lib="0" loc="(610,150)" name="Pin">
-      <a name="facing" val="west"/>
-      <a name="output" val="true"/>
-      <a name="labelloc" val="east"/>
-    </comp>
-    <comp lib="6" loc="(40,100)" name="Text">
-      <a name="text" val="B"/>
+    <comp lib="6" loc="(657,159)" name="Text">
+      <a name="text" val="co"/>
       <a name="font" val="SansSerif bold 20"/>
-    </comp>
-    <comp lib="1" loc="(410,150)" name="AND Gate">
-      <a name="inputs" val="2"/>
     </comp>
     <comp lib="0" loc="(550,350)" name="Pin">
       <a name="facing" val="west"/>
       <a name="output" val="true"/>
       <a name="labelloc" val="east"/>
     </comp>
-    <comp lib="1" loc="(410,230)" name="AND Gate">
+    <comp lib="1" loc="(420,330)" name="XOR Gate">
       <a name="inputs" val="2"/>
+    </comp>
+    <comp lib="1" loc="(410,150)" name="AND Gate">
+      <a name="inputs" val="2"/>
+    </comp>
+    <comp lib="6" loc="(40,100)" name="Text">
+      <a name="text" val="B"/>
+      <a name="font" val="SansSerif bold 20"/>
     </comp>
     <comp lib="6" loc="(31,180)" name="Text">
       <a name="text" val="cin"/>
       <a name="font" val="SansSerif bold 20"/>
+    </comp>
+    <comp lib="0" loc="(610,150)" name="Pin">
+      <a name="facing" val="west"/>
+      <a name="output" val="true"/>
+      <a name="labelloc" val="east"/>
+    </comp>
+    <comp lib="1" loc="(410,70)" name="AND Gate">
+      <a name="inputs" val="2"/>
     </comp>
   </circuit>
   <circuit name="Subtrator_completo">
@@ -200,11 +200,9 @@
     <wire from="(570,150)" to="(610,150)"/>
     <wire from="(80,50)" to="(320,50)"/>
     <wire from="(250,210)" to="(360,210)"/>
-    <wire from="(250,170)" to="(360,170)"/>
     <wire from="(250,90)" to="(360,90)"/>
     <wire from="(220,170)" to="(220,250)"/>
     <wire from="(220,370)" to="(460,370)"/>
-    <wire from="(250,90)" to="(250,170)"/>
     <wire from="(410,150)" to="(520,150)"/>
     <wire from="(320,50)" to="(320,130)"/>
     <wire from="(250,350)" to="(360,350)"/>
@@ -216,15 +214,16 @@
     <wire from="(320,50)" to="(350,50)"/>
     <wire from="(320,130)" to="(350,130)"/>
     <wire from="(520,350)" to="(550,350)"/>
-    <wire from="(250,170)" to="(250,210)"/>
     <wire from="(320,130)" to="(320,310)"/>
     <wire from="(80,170)" to="(220,170)"/>
     <wire from="(410,70)" to="(490,70)"/>
     <wire from="(410,230)" to="(490,230)"/>
     <wire from="(220,250)" to="(360,250)"/>
+    <wire from="(220,170)" to="(360,170)"/>
     <wire from="(490,70)" to="(490,130)"/>
     <wire from="(490,170)" to="(490,230)"/>
     <wire from="(220,250)" to="(220,370)"/>
+    <wire from="(250,90)" to="(250,210)"/>
     <comp lib="1" loc="(410,70)" name="AND Gate">
       <a name="inputs" val="2"/>
       <a name="negate0" val="true"/>
@@ -233,56 +232,56 @@
       <a name="text" val="Te"/>
       <a name="font" val="SansSerif bold 20"/>
     </comp>
-    <comp lib="1" loc="(520,350)" name="XOR Gate">
-      <a name="inputs" val="2"/>
-    </comp>
-    <comp lib="0" loc="(550,350)" name="Pin">
-      <a name="facing" val="west"/>
-      <a name="output" val="true"/>
-      <a name="labelloc" val="east"/>
-    </comp>
     <comp lib="6" loc="(40,100)" name="Text">
       <a name="text" val="B"/>
       <a name="font" val="SansSerif bold 20"/>
-    </comp>
-    <comp lib="6" loc="(657,159)" name="Text">
-      <a name="text" val="To"/>
-      <a name="font" val="SansSerif bold 20"/>
-    </comp>
-    <comp lib="1" loc="(420,330)" name="XOR Gate">
-      <a name="inputs" val="2"/>
-    </comp>
-    <comp lib="0" loc="(80,170)" name="Pin">
-      <a name="tristate" val="false"/>
-    </comp>
-    <comp lib="0" loc="(80,50)" name="Pin">
-      <a name="tristate" val="false"/>
-    </comp>
-    <comp lib="1" loc="(410,150)" name="AND Gate">
-      <a name="inputs" val="2"/>
-      <a name="negate0" val="true"/>
-    </comp>
-    <comp lib="1" loc="(570,150)" name="OR Gate">
-      <a name="inputs" val="3"/>
-    </comp>
-    <comp lib="0" loc="(80,90)" name="Pin">
-      <a name="tristate" val="false"/>
     </comp>
     <comp lib="0" loc="(610,150)" name="Pin">
       <a name="facing" val="west"/>
       <a name="output" val="true"/>
       <a name="labelloc" val="east"/>
     </comp>
-    <comp lib="6" loc="(41,56)" name="Text">
-      <a name="text" val="A"/>
-      <a name="font" val="SansSerif bold 20"/>
+    <comp lib="0" loc="(550,350)" name="Pin">
+      <a name="facing" val="west"/>
+      <a name="output" val="true"/>
+      <a name="labelloc" val="east"/>
+    </comp>
+    <comp lib="1" loc="(420,330)" name="XOR Gate">
+      <a name="inputs" val="2"/>
+    </comp>
+    <comp lib="0" loc="(80,90)" name="Pin">
+      <a name="tristate" val="false"/>
     </comp>
     <comp lib="6" loc="(589,357)" name="Text">
       <a name="text" val="s"/>
       <a name="font" val="SansSerif bold 20"/>
     </comp>
+    <comp lib="0" loc="(80,50)" name="Pin">
+      <a name="tristate" val="false"/>
+    </comp>
+    <comp lib="1" loc="(570,150)" name="OR Gate">
+      <a name="inputs" val="3"/>
+    </comp>
+    <comp lib="1" loc="(520,350)" name="XOR Gate">
+      <a name="inputs" val="2"/>
+    </comp>
+    <comp lib="6" loc="(657,159)" name="Text">
+      <a name="text" val="To"/>
+      <a name="font" val="SansSerif bold 20"/>
+    </comp>
+    <comp lib="0" loc="(80,170)" name="Pin">
+      <a name="tristate" val="false"/>
+    </comp>
     <comp lib="1" loc="(410,230)" name="AND Gate">
       <a name="inputs" val="2"/>
+    </comp>
+    <comp lib="6" loc="(41,56)" name="Text">
+      <a name="text" val="A"/>
+      <a name="font" val="SansSerif bold 20"/>
+    </comp>
+    <comp lib="1" loc="(410,150)" name="AND Gate">
+      <a name="inputs" val="2"/>
+      <a name="negate0" val="true"/>
     </comp>
   </circuit>
   <circuit name="Meio_somador">
@@ -313,27 +312,21 @@
     <wire from="(230,160)" to="(230,270)"/>
     <wire from="(230,270)" to="(280,270)"/>
     <wire from="(230,160)" to="(280,160)"/>
-    <comp lib="6" loc="(402,223)" name="Text">
-      <a name="text" val="S"/>
-    </comp>
-    <comp lib="6" loc="(68,119)" name="Text">
-      <a name="text" val="A"/>
-    </comp>
     <comp lib="1" loc="(340,250)" name="XOR Gate">
       <a name="inputs" val="2"/>
     </comp>
-    <comp lib="1" loc="(330,140)" name="AND Gate">
-      <a name="inputs" val="2"/>
+    <comp lib="0" loc="(110,160)" name="Pin">
+      <a name="tristate" val="false"/>
     </comp>
-    <comp lib="0" loc="(390,140)" name="Pin">
+    <comp lib="0" loc="(390,250)" name="Pin">
       <a name="facing" val="west"/>
       <a name="output" val="true"/>
       <a name="labelloc" val="east"/>
     </comp>
-    <comp lib="6" loc="(68,168)" name="Text">
-      <a name="text" val="B"/>
+    <comp lib="6" loc="(68,119)" name="Text">
+      <a name="text" val="A"/>
     </comp>
-    <comp lib="0" loc="(390,250)" name="Pin">
+    <comp lib="0" loc="(390,140)" name="Pin">
       <a name="facing" val="west"/>
       <a name="output" val="true"/>
       <a name="labelloc" val="east"/>
@@ -341,11 +334,17 @@
     <comp lib="0" loc="(110,120)" name="Pin">
       <a name="tristate" val="false"/>
     </comp>
-    <comp lib="0" loc="(110,160)" name="Pin">
-      <a name="tristate" val="false"/>
+    <comp lib="6" loc="(402,223)" name="Text">
+      <a name="text" val="S"/>
     </comp>
     <comp lib="6" loc="(397,100)" name="Text">
       <a name="text" val="Co"/>
+    </comp>
+    <comp lib="6" loc="(68,168)" name="Text">
+      <a name="text" val="B"/>
+    </comp>
+    <comp lib="1" loc="(330,140)" name="AND Gate">
+      <a name="inputs" val="2"/>
     </comp>
   </circuit>
   <circuit name="Meio_subtrator">
@@ -376,40 +375,40 @@
     <wire from="(190,100)" to="(320,100)"/>
     <wire from="(400,120)" to="(470,120)"/>
     <wire from="(190,140)" to="(290,140)"/>
-    <comp lib="0" loc="(470,120)" name="Pin">
-      <a name="facing" val="west"/>
-      <a name="output" val="true"/>
-      <a name="labelloc" val="east"/>
-    </comp>
-    <comp lib="6" loc="(503,222)" name="Text">
-      <a name="text" val="S"/>
-    </comp>
-    <comp lib="1" loc="(400,120)" name="AND Gate">
-      <a name="inputs" val="2"/>
-      <a name="negate0" val="true"/>
-    </comp>
-    <comp lib="6" loc="(148,102)" name="Text">
-      <a name="text" val="A"/>
-    </comp>
     <comp lib="6" loc="(506,120)" name="Text">
       <a name="text" val="To"/>
-    </comp>
-    <comp lib="0" loc="(190,100)" name="Pin">
-      <a name="tristate" val="false"/>
-    </comp>
-    <comp lib="0" loc="(190,140)" name="Pin">
-      <a name="tristate" val="false"/>
     </comp>
     <comp lib="0" loc="(470,220)" name="Pin">
       <a name="facing" val="west"/>
       <a name="output" val="true"/>
       <a name="labelloc" val="east"/>
     </comp>
-    <comp lib="1" loc="(410,220)" name="XOR Gate">
-      <a name="inputs" val="2"/>
+    <comp lib="0" loc="(470,120)" name="Pin">
+      <a name="facing" val="west"/>
+      <a name="output" val="true"/>
+      <a name="labelloc" val="east"/>
     </comp>
     <comp lib="6" loc="(148,143)" name="Text">
       <a name="text" val="B"/>
+    </comp>
+    <comp lib="1" loc="(400,120)" name="AND Gate">
+      <a name="inputs" val="2"/>
+      <a name="negate0" val="true"/>
+    </comp>
+    <comp lib="0" loc="(190,140)" name="Pin">
+      <a name="tristate" val="false"/>
+    </comp>
+    <comp lib="6" loc="(503,222)" name="Text">
+      <a name="text" val="S"/>
+    </comp>
+    <comp lib="6" loc="(148,102)" name="Text">
+      <a name="text" val="A"/>
+    </comp>
+    <comp lib="0" loc="(190,100)" name="Pin">
+      <a name="tristate" val="false"/>
+    </comp>
+    <comp lib="1" loc="(410,220)" name="XOR Gate">
+      <a name="inputs" val="2"/>
     </comp>
   </circuit>
 </project>
