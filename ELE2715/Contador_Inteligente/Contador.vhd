@@ -91,17 +91,17 @@ architecture ckt of TC is
 			Y : out bit);
 	end component;
 
-	signal SAIDA_0 : bit;
-	signal SAIDA_1 : bit;
+	signal CRESCENTE : bit;
+	signal DECRESCENTE : bit;
 
 	begin
 		
-		CR : TC_CRES port map (ENTRADA, SAIDA_0);
-		DC : TC_DEC port map (ENTRADA, SAIDA_1);
+		CR : TC_CRES port map (ENTRADA, CRESCENTE);
+		DC : TC_DEC port map (ENTRADA, DECRESCENTE);
 
-		ESTOURO : MUX2B port map (SAIDA_0, SAIDA_1, S);
+		ESTOURO : MUX2B port map (CRESCENTE, DECRESCENTE, S);
 
-		Y <= (not S and SAIDA_0) or (S and SAIDA_1);
+		Y <= (not S and CRESCENTE) or (S and DECRESCENTE);
 
 end ckt;
 
@@ -141,19 +141,121 @@ begin
 end ckt;
 
 --==============================================================================================
---				LOGICA DO SOMADOR COMPLETO
+--				LOGICA DO PASSO CRESCENTE
 --==============================================================================================
+entity SMEIO is
+	port (A, B : in bit;
+			S, Co : out bit);
+end SMEIO;
+
+architecture ckt of SMEIO is
+
+	begin 
+		S <= A xor B;
+		Co <= A and B;
+
+end ckt;
+
 entity SCOMP is
 	port( A, B, Ci : in bit;
-			S, Co : out bit);
+			Co, S : out bit);
 end SCOMP;
 
 architecture ckt of SCOMP is
 
 	begin
+
 		S <= A xor B xor Ci;
 		Co <= (A and B) or (A and Ci) or (B and Ci);
 		
 end ckt;
 
+entity ADD4 is
+	port(A, B : in bit_vector(3 downto 0);
+			Co : out bit;
+		 	S : out bit_vector(3 downto 0));
+end ADD4;
 
+architecture ckt of ADD4 is
+
+	component SMEIO is
+		port (A, B : in bit;
+			S, Co : out bit);
+	end component;
+
+	component SCOMP is
+		port( A, B, Ci : in bit;
+			Co, S : out bit);
+	end component;
+
+	signal Carry : bit_vector(3 downto 0);
+
+	begin
+
+		R0 : SMEIO port map (A(0), B(0), S(0), Carry(0));
+		R1 : SCOMP port map (A(1), B(1), Carry(0), Carry(1), S(1));
+		R2 : SCOMP port map (A(2), B(2), Carry(1), Carry(2), S(2));
+		R3 : SCOMP port map (A(3), B(3), Carry(2), Carry(3), S(3));
+		
+end ckt;
+
+--==============================================================================================
+--				LOGICA DO PASSO DECRESCENTE
+--==============================================================================================
+entity SUBMEIO is
+	port (A , B : in bit;
+			S, Tout : out bit);
+end SUBMEIO;
+
+architecture ckt of SUBMEIO is
+
+	begin
+		S <= (not A) and B;
+		Tout <= A xor B;
+
+end ckt;
+
+entity SUBCOMP is
+	port(A, B : in bit;
+		Tin : in bit;
+		S : out bit;
+		Tout : out bit);
+end SUBCOMP;
+
+architecture ckt of SUBCOMP is
+
+	begin
+		S <= (A xor B) xor Tin;
+		Tout <= ((not A) and B) or ((not A) and Tin) or (B and Tin);
+end ckt;
+
+entity SUB4 is
+	port (A, B : in bit_vector(3 downto 0);
+			Tout : out bit;
+			S : out bit_vector(3 downto 0));
+end SUB4;
+
+architecture ckt of SUB4 is
+
+	component SUBMEIO is
+		port (A , B : in bit;
+			S, Tout : out bit);
+	end component;
+
+	component SUBCOMP is
+		port(A, B : in bit;
+		Tin : in bit;
+		S : out bit;
+		Tout : out bit);
+	end component;
+
+	signal Borrow : bit_vector(3 downto 0);
+
+	begin
+
+		R0 : SUBMEIO port map (A(0), B(0), S(0), Borrow(0));
+		R1 : SUBCOMP port map (A(1), B(1), Borrow(0), S(1), Borrow(1));
+		R2 : SUBCOMP port map (A(2), B(2), Borrow(1), S(2), Borrow(2));
+		R3 : SUBCOMP port map (A(3), B(3), Borrow(2), S(3), Borrow(3));
+
+end ckt;
