@@ -1,3 +1,104 @@
+--==============================================================================================
+--				FLIP-FLOP D
+--==============================================================================================
+entity FFD is
+	port (clk ,d,set ,clr: in bit;
+			q: out bit);
+end FFD;
+
+architecture CKT of FFD is
+	
+signal qs: bit;
+begin
+	process(clk ,set ,clr)
+	begin
+
+		if set = '0' then qs <= '1';
+		elsif clr = '0' then qs <= '0';
+		elsif clk='1' and clk 'event then
+			qs <= d;
+	end if;
+
+	end process;
+
+	q <= qs;
+
+end CKT;
+
+--==============================================================================================
+--				FLIP-FLOP J-K
+--==============================================================================================
+entity FFJK is
+	port (clk ,j,k,set ,clr: in bit;
+		q: out bit);
+end FFJK;
+
+
+architecture CKT of FFJK is
+
+signal qs: bit;
+begin
+
+	process(clk ,set ,clr)
+	begin
+		if set = '0' then qs <= '1';
+		elsif clr = '0' then qs <= '0';
+		elsif clk= '1' and clk 'event then
+			
+			if j = '1' and k = '1' then qs <= not qs;
+			elsif j = '1' and k = '0' then qs <= '1';
+			elsif j = '0' and k = '1' then qs <= '0';
+			end if;
+
+		end if;
+	end process;
+
+	q <= qs;
+
+end CKT;
+
+--==============================================================================================
+--				ARMAZENADOR DE 4 BITS
+--==============================================================================================
+
+entity MEM4B is
+	port (I : in bit_vector(3 downto 0);
+			clk : bit;
+			set : in bit;
+			clr : in bit;
+			load : in bit;
+			S : out bit_vector(3 downto 0));
+end MEM4B;
+
+architecture ckt of MEM4B is
+
+	component FFD is
+		port (clk ,d,set ,clr: in bit;
+			q: out bit);
+	end component;
+
+	signal aux : bit_vector(3 downto 0);
+	
+
+	begin
+
+	A0 : FFD port map (clk, aux(0), set, clr, S(0));
+	A1 : FFD port map (clk, aux(1), set, clr, S(1));
+	A2 : FFD port map (clk, aux(2), set, clr, S(2));
+	A3 : FFD port map (clk, aux(3), set, clr, S(3));
+
+	process(load)
+	begin
+		if load = '1' then
+			aux(0) <= I(0);
+			aux(1) <= I(1);
+			aux(2) <= I(2);
+			aux(3) <= I(3);
+		end if;
+	end process;
+
+end ckt;
+
 --=================================================================
 --				MUX de 2 BITS
 --=================================================================
@@ -260,62 +361,3 @@ architecture ckt of SUB4 is
 
 end ckt;
 
---==============================================================================================
---				FLIP-FLOP D
---==============================================================================================
-entity FFD is
-	port (clk ,d,set ,clr: in bit;
-			q: out bit);
-end FFD;
-
-architecture CKT of FFD is
-	
-signal qs: bit;
-begin
-	process(clk ,set ,clr)
-	begin
-
-		if set = '0' then qs <= '1';
-		elsif clr = '0' then qs <= '0';
-		elsif clk='1' and clk 'event then
-			qs <= d;
-	end if;
-
-	end process;
-
-	q <= qs;
-
-end CKT;
-
-
---==============================================================================================
---				FLIP-FLOP J-K
---==============================================================================================
-entity FFJK is
-	port (clk ,j,k,set ,clr: in bit;
-		q: out bit);
-end FFJK;
-
-
-architecture CKT of FFJK is
-
-signal qs: bit;
-begin
-
-	process(clk ,set ,clr)
-	begin
-		if set = '0' then qs <= '1';
-		elsif clr = '0' then qs <= '0';
-		elsif clk= '1' and clk 'event then
-			
-			if j = '1' and k = '1' then qs <= not qs;
-			elsif j = '1' and k = '0' then qs <= '1';
-			elsif j = '0' and k = '1' then qs <= '0';
-			end if;
-
-		end if;
-	end process;
-
-	q <= qs;
-
-end CKT;
