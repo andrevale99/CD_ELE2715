@@ -1,3 +1,6 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
 entity tb is
 end tb;
 
@@ -27,6 +30,8 @@ architecture bench of tb is
 	signal A : bit_vector(3 downto 0);
 	signal B : bit_vector(3 downto 0);
 	signal SEL : bit;
+
+	signal clk: std_logic := '0'; --CLOCK
 	
 
 	--for DESL_LEFT : SHFTL use entity work.SHFTL;
@@ -41,9 +46,14 @@ architecture bench of tb is
 	SOMA : ADD4 port map (A => A, B=>B);
 	SUB : SUB4 port map (A=>A, B=> B);
 
+	CLOCK : clk <=  '1' after 0.5 ns when clk = '0' else
+        			'0' after 0.5 ns when clk = '1';
+
+
 	process
 	begin
 
+		
 		A <= "1110";
 		B <= "0100";
 		wait for 10 fs;
