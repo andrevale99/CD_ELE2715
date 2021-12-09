@@ -7,12 +7,12 @@ architecture CKT of FFD is
 	
 signal qs: bit;
 begin
-	process(ck ,set ,clr
+	process(clk ,set ,clr)
 	begin
 
-		if set = ’0’ then qs <= ’1’;
-		elsif clr = ’0’ then qs <= ’0’;
-		elsif ck=’1’ and ck ’event then
+		if set = '0' then qs <= '1';
+		elsif clr = '0' then qs <= '0';
+		elsif clk='1' and clk 'event then
 			qs <= d;
 	end if;
 
