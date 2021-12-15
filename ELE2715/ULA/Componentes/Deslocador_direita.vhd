@@ -93,13 +93,13 @@ end ckt;
 -- DESLOCADOR BARREL
 --========================================================================
 
-entity BARREL is
+entity BARREL_RIGHT is
 	port (S : in bit_vector(2 downto 0);
 			I : in bit_vector(7 downto 0);
 			Y : out bit_vector(7 downto 0));
-end BARREL;
+end BARREL_RIGHT;
 
-architecture ckt of BARREL is
+architecture ckt of BARREL_RIGHT is
 
 	component SHFTR_1 is
 		port(	s : in bit;
