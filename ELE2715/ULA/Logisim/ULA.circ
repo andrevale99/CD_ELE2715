@@ -59,12 +59,14 @@
     <tool name="Text Tool">
       <a name="text" val=""/>
       <a name="font" val="SansSerif plain 12"/>
-      <a name="halign" val="left"/>
+      <a name="halign" val="center"/>
       <a name="valign" val="base"/>
     </tool>
   </lib>
   <lib desc="file#Somador_Subtrator.circ" name="7"/>
   <lib desc="file#Deslocador.circ" name="8"/>
+  <lib desc="file#Multiplicador.circ" name="9"/>
+  <lib desc="file#Oprs_logicas.circ" name="10"/>
   <main name="main"/>
   <options>
     <a name="gateUndefined" val="ignore"/>
@@ -82,7 +84,7 @@
     <tool lib="6" name="Text Tool">
       <a name="text" val=""/>
       <a name="font" val="SansSerif plain 12"/>
-      <a name="halign" val="left"/>
+      <a name="halign" val="center"/>
       <a name="valign" val="base"/>
     </tool>
     <sep/>
@@ -103,5 +105,14 @@
     <a name="clabel" val=""/>
     <a name="clabelup" val="east"/>
     <a name="clabelfont" val="SansSerif plain 12"/>
+    <comp lib="10" loc="(320,350)" name="XOR"/>
+    <comp lib="7" loc="(320,110)" name="SUB8"/>
+    <comp lib="8" loc="(320,540)" name="Shifte_&gt;&gt;"/>
+    <comp lib="9" loc="(320,180)" name="Multiplicador_8bits"/>
+    <comp lib="8" loc="(320,460)" name="Shifter_&lt;&lt;"/>
+    <comp lib="10" loc="(320,290)" name="OR"/>
+    <comp lib="10" loc="(320,410)" name="NOT"/>
+    <comp lib="10" loc="(320,230)" name="AND"/>
+    <comp lib="7" loc="(320,40)" name="ADD8"/>
   </circuit>
 </project>
