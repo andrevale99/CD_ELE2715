@@ -22,8 +22,7 @@ entity ADD8 is
 	port (A, B : in bit_vector(7 downto 0);
 			Ci : in bit;
 			Co : out bit;
-			S : out bit_vector(7 downto 0);
-			Z : out bit);
+			S : out bit_vector(7 downto 0));
 end ADD8;
 
 architecture ckt of ADD8 is
@@ -56,8 +55,7 @@ entity ADD16 is
 	port (A, B : in bit_vector(15 downto 0);
 			Ci : in bit;
 			Co : out bit;
-			S : out bit_vector(15 downto 0);
-			Z : out bit);
+			S : out bit_vector(15 downto 0));
 end ADD16;
 
 architecture ckt of ADD16 is
