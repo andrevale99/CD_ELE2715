@@ -106,6 +106,7 @@
     <a name="clabel" val=""/>
     <a name="clabelup" val="east"/>
     <a name="clabelfont" val="SansSerif plain 12"/>
+<<<<<<< HEAD
     <wire from="(530,390)" to="(650,390)"/>
     <wire from="(260,170)" to="(260,240)"/>
     <wire from="(550,270)" to="(550,280)"/>
@@ -248,5 +249,22 @@
     </comp>
     <comp lib="7" loc="(530,130)" name="ADD8"/>
     <comp lib="8" loc="(530,660)" name="Shifte_&gt;&gt;"/>
+=======
+    <comp lib="10" loc="(320,410)" name="NOT"/>
+    <comp lib="10" loc="(320,350)" name="XOR"/>
+    <comp lib="7" loc="(320,110)" name="SUB8"/>
+    <comp lib="10" loc="(320,230)" name="AND"/>
+    <comp lib="10" loc="(320,290)" name="OR"/>
+    <comp lib="8" loc="(320,540)" name="Shifte_&gt;&gt;"/>
+    <comp lib="8" loc="(320,460)" name="Shifter_&lt;&lt;"/>
+    <comp lib="9" loc="(320,180)" name="Multiplicador_8bits"/>
+    <comp lib="7" loc="(320,40)" name="ADD8"/>
+>>>>>>> ab5d24250dc12aa992cdba86179bad006345a229
+  </circuit>
+  <circuit name="Soma_Sub">
+    <a name="circuit" val="Soma_Sub"/>
+    <a name="clabel" val=""/>
+    <a name="clabelup" val="east"/>
+    <a name="clabelfont" val="SansSerif plain 12"/>
   </circuit>
 </project>
