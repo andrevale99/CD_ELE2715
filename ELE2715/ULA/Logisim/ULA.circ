@@ -2,20 +2,72 @@
 <project source="2.7.1" version="1.0">
   This file is intended to be loaded by Logisim (http://www.cburch.com/logisim/).
 
-  <lib desc="#Wiring" name="0"/>
+  <lib desc="#Wiring" name="0">
+    <tool name="Splitter">
+      <a name="facing" val="west"/>
+      <a name="fanout" val="3"/>
+      <a name="incoming" val="3"/>
+    </tool>
+    <tool name="Constant">
+      <a name="facing" val="north"/>
+    </tool>
+  </lib>
   <lib desc="#Gates" name="1"/>
-  <lib desc="#Plexers" name="2"/>
-  <lib desc="#Arithmetic" name="3"/>
-  <lib desc="#Memory" name="4"/>
+  <lib desc="#Plexers" name="2">
+    <tool name="Multiplexer">
+      <a name="facing" val="south"/>
+      <a name="width" val="4"/>
+    </tool>
+    <tool name="Demultiplexer">
+      <a name="select" val="3"/>
+      <a name="width" val="3"/>
+    </tool>
+    <tool name="Decoder">
+      <a name="facing" val="west"/>
+      <a name="select" val="4"/>
+    </tool>
+  </lib>
+  <lib desc="#Arithmetic" name="3">
+    <tool name="Subtractor">
+      <a name="width" val="5"/>
+    </tool>
+  </lib>
+  <lib desc="#Memory" name="4">
+    <tool name="D Flip-Flop">
+      <a name="trigger" val="high"/>
+    </tool>
+    <tool name="Counter">
+      <a name="width" val="4"/>
+      <a name="max" val="0xf"/>
+    </tool>
+    <tool name="Shift Register">
+      <a name="length" val="4"/>
+    </tool>
+    <tool name="RAM">
+      <a name="addrWidth" val="4"/>
+      <a name="dataWidth" val="4"/>
+      <a name="bus" val="asynch"/>
+    </tool>
+    <tool name="ROM">
+      <a name="contents">addr/data: 8 8
+0
+</a>
+    </tool>
+  </lib>
   <lib desc="#I/O" name="5"/>
   <lib desc="#Base" name="6">
     <tool name="Text Tool">
       <a name="text" val=""/>
       <a name="font" val="SansSerif plain 12"/>
-      <a name="halign" val="center"/>
+      <a name="halign" val="left"/>
       <a name="valign" val="base"/>
     </tool>
   </lib>
+  <lib desc="file#Somador_Subtrator.circ" name="7"/>
+  <lib desc="file#Seletor_de_8bits.circ" name="8"/>
+  <lib desc="file#Oprs_logicas.circ" name="9"/>
+  <lib desc="file#Multiplicador.circ" name="10"/>
+  <lib desc="file#Deslocador.circ" name="11"/>
   <main name="main"/>
   <options>
     <a name="gateUndefined" val="ignore"/>
@@ -33,7 +85,7 @@
     <tool lib="6" name="Text Tool">
       <a name="text" val=""/>
       <a name="font" val="SansSerif plain 12"/>
-      <a name="halign" val="center"/>
+      <a name="halign" val="left"/>
       <a name="valign" val="base"/>
     </tool>
     <sep/>
