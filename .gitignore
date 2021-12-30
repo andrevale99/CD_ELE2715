@@ -1,6 +1,6 @@
 work-*
 
-*.simulation
+*.sim
 
 git_token.txt
 
