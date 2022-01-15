@@ -3,9 +3,9 @@
 --========================================
 
 entity REGEST is
-	port(	nx : in bit_vector(3 downto 0);
+	port(	n : in bit_vector(3 downto 0);
 			clk ,d,set ,clr: in bit;
-			sx : out bit_vector(3 downto 0));
+			s : out bit_vector(3 downto 0));
 end REGEST;
 
 architecture ckt of REGEST is
@@ -17,9 +17,9 @@ architecture ckt of REGEST is
 
 	begin
 
-		S0 : FFD port map(clk, nx(0), set, clr, sx(0));
-		S1 : FFD port map(clk, nx(1), set, clr, sx(1));
-		S2 : FFD port map(clk, nx(2), set, clr, sx(2));
-		S3 : FFD port map(clk, nx(3), set, clr, sx(3));
+		S0 : FFD port map(clk, n(0), set, clr, s(0));
+		S1 : FFD port map(clk, n(1), set, clr, s(1));
+		S2 : FFD port map(clk, n(2), set, clr, s(2));
+		S3 : FFD port map(clk, n(3), set, clr, s(3));
 
 end ckt;
