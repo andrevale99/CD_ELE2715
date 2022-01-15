@@ -32,5 +32,9 @@ Caso queira verificar a simulção basta rodar o comando
 
 Um exemplo da compilação dos arquivos pode ser verificado na pasta [Example](VHDL/Example/).
 
+# AVISO
+
+caso queira criar um circuito com algum *clock* infinito, deve utilizar do argumento **--stop-time=XX[fs, ns, ms, sec, ...]**, pois o GHDL não suporta *clock* infinito no TESTBENCH.
+
 
    
