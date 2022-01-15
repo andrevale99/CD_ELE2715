@@ -23,7 +23,7 @@ architecture ckt of LOGEST is
             or (not S(3) and S(2) and S(1) and S(0) and not COMPT5) 
             or (S(3) and not S(2) and not S(1) and not S(0) and COMPS) 
             or (S(3) and not S(2) and not S(1) and S(0) and not COMPT20) 
-            or (S(3) and S(2) and S(1) and S(0) and ( not COMPT5 and( not ONN and not ADD)));
+            or (S(3) and S(2) and S(1) and S(0) and ( not COMPT5));
 
     N(1) <= (not S(3) and not S(2) and not S(1) and S(0) and COMPT5)
             or (not S(3) and not S(2) and S(1) and not S(0) and ((not ONN and not ADD) or (ONN and ADD) or (ONN and not ADD) or (not ONN and ADD)))
@@ -34,7 +34,7 @@ architecture ckt of LOGEST is
             or (not S(3) and S(2) and S(1) and S(0) and not COMPT5) 
             or (S(3) and not S(2) and not S(1) and S(0) and COMPT20) 
             or (S(3) and not S(2) and S(1) and not S(0) and ((not ONN and ADD) or (ONN and not ADD) or (ONN and ADD))) 
-            or (S(3) and S(2) and S(1) and S(0) and (not COMPT5 and ( not ONN and not ADD)));
+            or (S(3) and S(2) and S(1) and S(0) and (not COMPT5));
 
     N(2) <= (not S(3) and not S(2) and S(1) and not S(0) and (ONN and not ADD)) 
             or (not S(3) and not S(2) and S(1) and S(0) and COMPT5 and (not ADD and not ONN)) 
@@ -42,7 +42,7 @@ architecture ckt of LOGEST is
             or (not S(3) and S(2) and not S(1) and S(0) and (not COMPT5 or COMPT5)) 
             or (not S(3) and S(2) and S(1) and not S(0) and ((ONN and not ADD) or (not ONN and ADD) or (not ONN and not ADD) or (ONN and ADD))) 
             or (not S(3) and S(2) and S(1) and S(0) and not COMPT5) 
-            or (S(3) and S(2) and S(1) and S(0) and (not COMPT5 and (not ONN and not ADD)));
+            or (S(3) and S(2) and S(1) and S(0) and (not COMPT5));
 
     N(3) <= (not S(3) and not S(2) and S(1) and not S(0) and (ONN and not ADD)) 
             or ( not S(3) and S(2) and not S(1) and not S(0) and (ONN and not ADD) )
@@ -51,7 +51,7 @@ architecture ckt of LOGEST is
             or (S(3) and not S(2) and not S(1) and not S(0) and COMPS) 
             or (S(3) and not S(2) and not S(1) and S(0) and (not COMPT20 or COMPT20)) 
             or (S(3) and not S(2) and S(1) and not S(0) and ((not ONN and ADD) or (ONN and not ADD) or (ONN and ADD)))
-            or (S(3) and S(2) and S(1) and S(0) and (not COMPT5 and (not ONN and not ADD)));
+            or (S(3) and S(2) and S(1) and S(0) and (not COMPT5));
 
     R <= (not S(3) and not S(2) and not S(1) and not S(0)) 
          or (not S(3) and not S(2) and S(1) and not S(0))
