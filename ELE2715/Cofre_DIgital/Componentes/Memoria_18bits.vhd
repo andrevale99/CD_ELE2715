@@ -1,15 +1,18 @@
 entity MEM18 is
-	port (	CLK, CLR : in bit;
-			I : in bit_vector(17 downto 0);
+	port (	CLK : in bit;
+			ESTADO : in bit_vector(3 downto 0);
+			I_1 : in bit_vector(5 downto 0);
+			I_2 : in bit_vector(5 downto 0);
+			I_3 : in bit_vector(5 downto 0);
    			S : out bit_vector(17 downto 0));
 end MEM18;
 
 architecture ckt of MEM18 is
 
 	component MEM6 is
-		port (	CLK, CLR : in bit;
-		 		I : in bit_vector(5 downto 0);
-				S : out bit_vector(5 downto 0));
+		port (	CLK, CLR, EN : in bit;
+				I : in bit_vector(5 downto 0);
+	   			S : out bit_vector(5 downto 0));
 	end component;
 
 	signal MEM6_1 : bit_vector(5 downto 0);
@@ -19,34 +22,46 @@ architecture ckt of MEM18 is
 	signal OUTT_1 : bit_vector(5 downto 0);
 	signal OUTT_2 : bit_vector(5 downto 0);
 	signal OUTT_3 : bit_vector(5 downto 0);
+
+	signal EN_EST_S1 : bit;
+	signal EN_EST_S2 : bit;
+	signal EN_EST_S3 : bit;
+
+	signal CLR_EST : bit;
 		
 	begin
 
-		MEM6_1(0) <= I(0);
-		MEM6_1(1) <= I(1);
-		MEM6_1(2) <= I(2);
-		MEM6_1(3) <= I(3);
-		MEM6_1(4) <= I(4);
-		MEM6_1(5) <= I(5);
+		MEM6_1(0) <= I_1(0);
+		MEM6_1(1) <= I_1(1);
+		MEM6_1(2) <= I_1(2);
+		MEM6_1(3) <= I_1(3);
+		MEM6_1(4) <= I_1(4);
+		MEM6_1(5) <= I_1(5);
 
-		MEM6_2(0) <= I(6);
-		MEM6_2(1) <= I(7);
-		MEM6_2(2) <= I(8);
-		MEM6_2(3) <= I(9);
-		MEM6_2(4) <= I(10);
-		MEM6_2(5) <= I(11);
+		MEM6_2(0) <= I_2(0);
+		MEM6_2(1) <= I_2(1);
+		MEM6_2(2) <= I_2(2);
+		MEM6_2(3) <= I_2(3);
+		MEM6_2(4) <= I_2(4);
+		MEM6_2(5) <= I_2(5);
 
-		MEM6_3(0) <= I(12);
-		MEM6_3(1) <= I(13);
-		MEM6_3(2) <= I(14);
-		MEM6_3(3) <= I(15);
-		MEM6_3(4) <= I(16);
-		MEM6_3(5) <= I(17);
+		MEM6_3(0) <= I_3(0);
+		MEM6_3(1) <= I_3(1);
+		MEM6_3(2) <= I_3(2);
+		MEM6_3(3) <= I_3(3);
+		MEM6_3(4) <= I_3(4);
+		MEM6_3(5) <= I_3(5);
+
+		EN_EST_S1 <= (not ESTADO(3) and not ESTADO(2) and ESTADO(1) and not ESTADO(0));
+		EN_EST_S2 <= (not ESTADO(3) and ESTADO(2) and not ESTADO(1) and not ESTADO(0));
+		EN_EST_S3 <=  (not ESTADO(3) and ESTADO(2) and ESTADO(1) and not ESTADO(0));
+
+		CLR_EST <= not (ESTADO(3) and ESTADO(2) and ESTADO(1) and ESTADO(0)) or (ESTADO(3) and not ESTADO(2) and ESTADO(1) and not ESTADO(0));
 
 
-		M1 : MEM6 port map (CLK, CLR, MEM6_1, OUTT_1);
-		M2 : MEM6 port map (CLK, CLR, MEM6_2, OUTT_2);
-		M3 : MEM6 port map (CLK, CLR, MEM6_3, OUTT_3);
+		M1 : MEM6 port map (CLK, CLR_EST, EN_EST_S1, MEM6_1, OUTT_1);
+		M2 : MEM6 port map (CLK, CLR_EST, EN_EST_S2, MEM6_2, OUTT_2);
+		M3 : MEM6 port map (CLK, CLR_EST, EN_EST_S3, MEM6_3, OUTT_3);
 
 
 		S(0) <= OUTT_1(0);
