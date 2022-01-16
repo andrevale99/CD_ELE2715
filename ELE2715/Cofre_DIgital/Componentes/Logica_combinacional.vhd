@@ -2,18 +2,19 @@
 --	LOGICA COMBINACIONAL DA MDE
 --========================================
 
-entity LOGEST is
+entity LOGCOMB is
     port(  ONN, ADD, COMPT5, COMPT20, COMPS : in bit;
             S: in bit_vector(3 downto 0);
-            TELA, OUTT, R, G, B : out bit;
+            OUTT, R, G, B : out bit;
+			VALOR, P1, P2 : out bit;
             N : out bit_vector(3 downto 0));
-end LOGEST;
+end LOGCOMB;
 
-architecture ckt of LOGEST is
+architecture ckt of LOGCOMB is
 
     begin
 
-    N(0) <= (ONN and not ADD and (not S(3) and not S(2) and not S(1) and not S(0)))
+    N(0) <= (ONN and not ADD and not (S(3) and S(2) and S(1) and S(0)))
             or (not S(3) and not S(2) and not S(1) and S(0) and not COMPT5)
             or ((not S(3) and not S(2) and S(1) and not S(0)) and ((ONN and not ADD) or (not ONN and ADD)))
             or (not S(3) and not S(2) and S(1) and S(0) and not COMPT5)
@@ -70,7 +71,9 @@ architecture ckt of LOGEST is
 
     OUTT <= S(3) and not S(2) and not S(1) and S(0);
 
-    TELA <= S(3) or S(2) or S(1) or S(0);
+    VALOR <= (not S(2) and not S(1) and not S(0)) or (not S(3) and S(1)) or not S(3);
+	P1 <= S(3) and S(2) and S(1) and S(0);
+	P2 <= S(3) and not S(2) and not S(1) and S(0);
 
 
 end ckt;

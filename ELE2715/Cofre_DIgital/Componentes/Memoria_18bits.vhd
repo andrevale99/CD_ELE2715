@@ -56,8 +56,7 @@ architecture ckt of MEM18 is
 		EN_EST_S2 <= (not ESTADO(3) and ESTADO(2) and not ESTADO(1) and not ESTADO(0));
 		EN_EST_S3 <=  (not ESTADO(3) and ESTADO(2) and ESTADO(1) and not ESTADO(0));
 
-		CLR_EST <= not (ESTADO(3) and ESTADO(2) and ESTADO(1) and ESTADO(0)) or (ESTADO(3) and not ESTADO(2) and ESTADO(1) and not ESTADO(0));
-
+		CLR_EST <= not ((ESTADO(3) and ESTADO(2) and ESTADO(1) and ESTADO(0)) or (ESTADO(3) and not ESTADO(2) and ESTADO(1) and not ESTADO(0)));
 
 		M1 : MEM6 port map (CLK, CLR_EST, EN_EST_S1, MEM6_1, OUTT_1);
 		M2 : MEM6 port map (CLK, CLR_EST, EN_EST_S2, MEM6_2, OUTT_2);
