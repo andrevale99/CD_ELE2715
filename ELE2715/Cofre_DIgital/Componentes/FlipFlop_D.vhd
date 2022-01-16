@@ -1,5 +1,5 @@
 entity FFD is
-	port (clk ,d,set ,clr: in bit;
+	port (clk ,d,set ,clr, en: in bit;
 			q: out bit);
 end FFD;
 
@@ -12,7 +12,7 @@ begin
 
 		if set = '0' then qs <= '1';
 		elsif clr = '0' then qs <= '0';
-		elsif clk='1' and clk 'event then
+		elsif clk='1' and clk 'event and en = '1' then
 			qs <= d;
 	end if;
 
