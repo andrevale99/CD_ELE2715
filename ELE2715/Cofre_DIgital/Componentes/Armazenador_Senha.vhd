@@ -21,11 +21,15 @@ architecture ckt of SENHA is
 				AigB, AmaiorB, AmenorB : out bit);
 	end component;
 
-	signal AUX_OUT : bit_vector( 17 downto 0);
+	signal Test_S1 : bit;
+	signal Test_S2 : bit;
+	signal Test_S3 : bit;
 
-	signal AUX_1 : bit_vector(5 downto 0);
-	signal AUX_2 : bit_vector(5 downto 0);
-	signal AUX_3 : bit_vector(5 downto 0);
+	signal AUX_OUT : bit_vector(17 downto 0);
+
+	signal AUX_1 : bit_vector(7 downto 0);
+	signal AUX_2 : bit_vector(7 downto 0);
+	signal AUX_3 : bit_vector(7 downto 0);
 
 begin
 	
@@ -37,6 +41,8 @@ begin
 	AUX_1(3) <= AUX_OUT(3);
 	AUX_1(4) <= AUX_OUT(4);
 	AUX_1(5) <= AUX_OUT(5);
+	AUX_1(6) <= '0';
+	AUX_1(7) <= '0';
 	
 	AUX_2(0)  <= AUX_OUT(6);
 	AUX_2(1)  <= AUX_OUT(7);
@@ -44,6 +50,8 @@ begin
 	AUX_2(3)  <= AUX_OUT(9);
 	AUX_2(4) <= AUX_OUT(10);
 	AUX_2(5) <= AUX_OUT(11);
+	AUX_2(6) <= '0';
+	AUX_2(7) <= '0';
 	
 	AUX_3(0) <= AUX_OUT(12);
 	AUX_3(1) <= AUX_OUT(13);
@@ -51,10 +59,15 @@ begin
 	AUX_3(3) <= AUX_OUT(15);
 	AUX_3(4) <= AUX_OUT(16);
 	AUX_3(5) <= AUX_OUT(17);
+	AUX_3(6) <= '0';
+	AUX_3(7) <= '0';
 
+	
+	--senha : 100100(36) | 010111(23) |  111100 (60)
+	COMPS_TESTE_01 : COMP8B port map (AUX_1, "00100100", Test_S1);
+	COMPS_TESTE_02 : COMP8B port map (AUX_2, "00010111", Test_S2);
+	COMPS_TESTE_03 : COMP8B port map (AUX_3, "00111100", Test_S3);
 
-	COMPS_TESTE_01 : COMP8B port map (AUX_1, );
-	COMPS_TESTE_02 : COMP8B port map (AUX_2, );
-	COMPS_TESTE_03 : COMP8B port map (AUX_3, );
+	COMPS <= Test_S1 and Test_S2 and Test_S3;
 
 end ckt;
