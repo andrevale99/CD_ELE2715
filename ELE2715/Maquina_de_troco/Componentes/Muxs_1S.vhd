@@ -25,7 +25,7 @@ entity MUX4B is
 			Q : out bit_vector(3 downto 0));
 end MUX4B;
 
-architecture ckt of MUX6B is
+architecture ckt of MUX4B is
 
 	component MUX2B is
 		port (	I1, I2 : in bit;
