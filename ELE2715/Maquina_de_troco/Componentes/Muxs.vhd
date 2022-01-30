@@ -17,6 +17,32 @@ begin
 end ckt;
 
 --===============================
+--		MUX de 4 bits de saida
+--===============================
+entity MUX4B is
+	port (	I1, I2 : in bit_vector(3 downto 0);
+			S : in bit;
+			Q : out bit_vector(3 downto 0));
+end MUX4B;
+
+architecture ckt of MUX6B is
+
+	component MUX2B is
+		port (	I1, I2 : in bit;
+				S : in bit;
+				Q : out bit);
+	end component;
+
+begin
+
+	Q1 : MUX2B port map (I1(0), I2(0), S, Q(0));
+	Q2 : MUX2B port map (I1(1), I2(1), S, Q(1));
+	Q3 : MUX2B port map (I1(2), I2(2), S, Q(2));
+	Q4 : MUX2B port map (I1(3), I2(3), S, Q(3));
+
+end ckt;
+
+--===============================
 --		MUX de 6 bits de saida
 --===============================
 entity MUX6B is
