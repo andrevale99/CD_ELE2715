@@ -21,6 +21,7 @@ architecture ckt of FILT is
 				clr_r : in bit;
 				ld_r : in bit;
 				clk : in bit;
+				carry : out bit;
 				y, c : in bit_vector(3 downto 0);
 				yout : out bit_vector(3 downto 0);
 				result : out bit_vector(7 downto 0));
@@ -36,6 +37,7 @@ architecture ckt of FILT is
 
 	component ADD10 is
 		port (	A, B : in bit_vector(9 downto 0);
+				cin : in bit;
 				Co : out bit;
 				S : out bit_vector(9 downto 0));
 	end component;
@@ -63,6 +65,9 @@ architecture ckt of FILT is
 	signal soma_aux : bit_vector(9 downto 0);
 
 	signal F_aux : bit_vector(9 downto 0);
+
+	signal carry_mult : bit_vector(2 downto 0);
+	signal carry_soma : bit_vector(1 downto 0);
 
 	begin
 
@@ -101,12 +106,12 @@ architecture ckt of FILT is
 
 		CHOOSE_C : DECODER port map (s_cod, en_cod, qual(0), qual(1), qual(2));
 
-		RC0 : RC port map (qual(0), clr_r, ld_r, clk, y, c, y1, r0);
-		RC1 : RC port map (qual(1), clr_r, ld_r, clk, y1, c, y2, r1);
-		RC2 : RC port map (qual(2), clr_r, ld_r, clk, y2, c, y3, r2);
+		RC0 : RC port map (qual(0), clr_r, ld_r, clk, carry_mult(0), y, c, y1, r0);
+		RC1 : RC port map (qual(1), clr_r, ld_r, clk, carry_mult(1), y1, c, y2, r1);
+		RC2 : RC port map (qual(2), clr_r, ld_r, clk, carry_mult(2), y2, c, y3, r2);
 
-		SOMA0 : ADD10 port map (r0_aux, r1_aux, S=>soma_aux);
-		SOMA1 : ADD10 port map (soma_aux, r2_aux, S=>F_aux);
+		SOMA0 : ADD10 port map (r0_aux, r1_aux, carry_mult(0), carry_soma(0), soma_aux);
+		SOMA1 : ADD10 port map (soma_aux, r2_aux, carry_mult(1), carry_soma(1), F_aux);
 
 		REG_OUT_F : MEM10B port map (F_aux, clk, '1', ld_out, F);
 

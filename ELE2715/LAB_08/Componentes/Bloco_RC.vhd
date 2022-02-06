@@ -6,6 +6,7 @@ entity RC is
 			clr_r : in bit;
 			ld_r : in bit;
 			clk : in bit;
+			carry : out bit;
 			y, c : in bit_vector(3 downto 0);
 			yout : out bit_vector(3 downto 0);
 			result : out bit_vector(7 downto 0));
@@ -39,7 +40,7 @@ architecture ckt of RC is
 		VY : REGY port map (y, clk, clr_r, ld_r, saida_regy);
 		VC : REGC port map (c, clk, ld_c, saida_regc);
 
-		SAIDA_MULT : MULT port map (A=>saida_regy, B=>saida_regc, S=>result);
+		SAIDA_MULT : MULT port map (saida_regy, saida_regc, carry, result);
 
 	
 		yout <= saida_regy;

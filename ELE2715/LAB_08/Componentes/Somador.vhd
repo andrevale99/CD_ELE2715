@@ -74,6 +74,7 @@ end ckt;
 
 entity ADD10 is
 	port (	A, B : in bit_vector(9 downto 0);
+			cin : in bit;
 			Co : out bit;
 			S : out bit_vector(9 downto 0));
 end ADD10;
