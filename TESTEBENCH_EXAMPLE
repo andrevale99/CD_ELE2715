@@ -1,0 +1,109 @@
+--COMANDO no terminal para compilar e visuzalizar no GTKWAVE
+--ghdl -a Componentes/*.vhd  && ghdl -a TESTBENCH.vhd && ghdl -e tb && ghdl -r tb --vcd=wave.simulation --stop-time=10sec && gtkwave wave.simu
+
+entity tb is
+end tb;
+
+architecture bench of tb is
+
+	component LOGEST is
+		port(  ONN, ADD, COMPT5, COMPT20, COMPS : in bit;
+				S: in bit_vector(3 downto 0);
+            	TELA, OUTT, R, G, B : out bit;
+            	N : out bit_vector(3 downto 0));
+	end component;
+
+	component CONT5 is
+		port (CLK, CLR : in bit;
+				C : out bit_vector(2 downto 0));
+	end component;
+
+	component CONT20 is
+		port (CLK, CLR : in bit;
+				C : out bit_vector(4 downto 0));
+	end component;
+
+	component COMP8B is
+		port (A, B : in bit_vector(7 downto 0);
+				AigB, AmaiorB, AmenorB : out bit);
+	end component;
+
+	signal clk: bit := '0'; --CLOCK
+
+	signal onn : bit;
+	signal add : bit;
+	signal compt20 : bit;
+	signal compt5 : bit;
+	signal comps: bit;
+	signal s : bit_vector(3 downto 0);
+
+	signal clr : bit;
+
+	signal a : bit_vector(7 downto 0);
+	signal b : bit_vector(7 downto 0);
+
+	--EXEMPLO de como criar os componentes para visualização no GTKWAVE
+	--for MUX8 : MUX8B use entity work.MUX8B;
+	for LOG : LOGEST use entity work.LOGEST;
+	for C20 : CONT20 use entity work.CONT20;
+	for C5 : CONT5 use entity work.CONT5;
+	for COMP : COMP8B use entity work.COMP8B;
+
+	begin
+	--EXEMPLO de como criar os componentes para visualização no GTKWAVE
+	--MUX8 : MUX8B port map (i=>a, s=>S);
+	CLOCK : clk <=  not clk after 0.5 sec;
+
+	LOG : LOGEST port map (ONN=>onn, ADD=>add, COMPT5=>compt5, COMPT20=>compt20, COMPS=>comps, S=>s);
+	C5 : CONT5 port map (CLK=>clk, CLR=>clr);
+	C20 : CONT20 port map (CLK=>clk, CLR=>clr);
+	COMP : COMP8B port map (A=>a, B=>b);
+	
+	process
+	begin
+		clr <= '1';
+
+		compt5 <= '0';
+		compt20 <= '0';
+		comps <= '0';
+
+		a <= "00000000";
+		b <= "00000000";
+
+		s <= "1111";
+		add <= '1';
+		onn <= '0'; 
+		wait for 3 sec;
+
+		a <= "00000111";
+		b <= "00000111";
+
+		add <= '0';
+		onn <= '0'; 
+		wait for 3 sec;
+
+		a <= "00110000";
+		b <= "00001100";
+
+		add <= '1';
+		onn <= '1'; 
+		wait for 3 sec;
+
+		a <= "00011000";
+		b <= "00111000";
+
+		add <= '0';
+		onn <= '1'; 
+		wait for 3 sec;
+
+		clr <= '0';
+		compt5 <= '1';
+		add <= '0';
+		onn <= '0'; 
+		wait for 3 sec;
+
+		wait;
+		end process;
+
+end bench;
+
