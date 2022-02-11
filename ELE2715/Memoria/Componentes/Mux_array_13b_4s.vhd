@@ -5,7 +5,7 @@
 entity MUX13B4S is
 	port ( I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, I11, I12, I13, I14, I15, I16 : in bit_vector(12 downto 0);
 			S : in bit_vector(3 downto 0);
-			Q : out bit_vector(15 downto 0));
+			Q : out bit_vector(12 downto 0));
 end MUX13B4S;
 
 architecture ckt of MUX13B4S is
