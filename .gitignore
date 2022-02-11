@@ -4,9 +4,6 @@ work-*
 
 git_token.txt
 
-TESTBENCH*
-ELE2715/Contador_Inteligente/TESTBENCH.vhd
-
 *.~lock*
 
 *.out
