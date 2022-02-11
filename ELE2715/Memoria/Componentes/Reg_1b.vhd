@@ -26,8 +26,7 @@ architecture ckt of REG1 is
 
         MUX_1 : MUX port map (aux, d, en, saida_mux); 
         REG_1 : FFD port map (clk, saida_mux, '1', clr, aux);
-
-        MUX_SAIDA : MUX port map ('0', aux, S=>rd, Q=>q);
+        MUX_SAIDA : MUX port map ('0', aux, rd, q);
         
 
 end ckt;

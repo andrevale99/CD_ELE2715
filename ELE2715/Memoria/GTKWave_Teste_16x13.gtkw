@@ -1,0 +1,40 @@
+[*]
+[*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
+[*] Fri Feb 11 20:43:00 2022
+[*]
+[dumpfile] "/home/andre/Área de Trabalho/Git/Circuitos_integrado/ELE2715/Memoria/wave.simu"
+[dumpfile_mtime] "Fri Feb 11 20:40:44 2022"
+[dumpfile_size] 245796
+[savefile] "/home/andre/Área de Trabalho/Git/Circuitos_integrado/ELE2715/Memoria/GTKWave_Teste_16x13.gtkw"
+[timestart] 0
+[size] 1366 711
+[pos] -361 -109
+*-51.000000 5380000000000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb.
+[sst_width] 212
+[signals_width] 206
+[sst_expanded] 1
+[sst_vpaned_height] 188
+@28
+tb.clk
+@200
+-
+@28
+tb.clr
+tb.rd
+tb.wd
+@200
+-
+@28
+tb.rd_addr[3:0]
+tb.wd_addr[3:0]
+@200
+-
+@24
+tb.wd_data[12:0]
+@200
+-
+@24
+tb.r16x13.rd_data[12:0]
+[pattern_trace] 1
+[pattern_trace] 0
