@@ -63,6 +63,9 @@ Pegar_senha_Pot:
 
         rjmp Conversao_para_display   ; Pula para o ajuste
 
+    mov r1, r30                       ; Salva o ADCH no r1
+    mov r2, r31                       ; Salva o ADCL no r2
+
     Conversao_para_display:
         ldi r29, 0              
         ldi r28, 0                    ;zerando acumuladores (dezena,centena,unidade)
