@@ -1,4 +1,4 @@
-FILENAME   = test
+FILENAME   = main
 PORT       = /dev/ttyUSB0
 DEVICE     = atmega328p
 PROGRAMMER = arduino

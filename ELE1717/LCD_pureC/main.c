@@ -1,61 +1,137 @@
-#include <avr/io.h>
-
 #define F_CPU 16000000
 
+#include <avr/io.h>
 #include <util/delay.h>
+#include <avr/pgmspace.h>
 
-#define RS PC0
+#define set_bit(y,bit) (y|=(1<<bit))
+#define clr_bit(y,bit) (y&=~(1<<bit))
+#define cpl_bit(y,bit) (y^=(1<<bit))
+#define tst_bit(y,bit) (y&(1<<bit))
+
+#define DADOS_LCD PORTB
+#define nibble_dados 0
+#define CONTR_LCD PORTC
 #define E PC1
+#define RS PC0
 
-#define SET_BIT(porta, pin) (porta |= (1<<pin)
-#define CLR_BIT(porta, pin) (porta &= ~(1<<pin)
-#define pulse_enbale() _delay_us(1); SET_BIT(PORTB, E); _delay_us(1); CLR_BIT(PORTB, E); _delay_us(45)
+#define tam_vetor 5
+#define conv_ascii 48
 
+#define PULAR_LINHA 0xA0
 
-//====================================
-//	PROTOTIPOS
-//====================================
-void iniciar_LCD_4bits();
+#define pulso_enable() _delay_us(1); set_bit(CONTR_LCD,E); _delay_us(1); clr_bit(CONTR_LCD,E); _delay_us(45)
 
-//====================================
-//	MAIN
-//====================================
+//protótipo das funções
+void cmd_LCD(unsigned char c, char cd);
+void inic_LCD_4bits();
+void escreve_LCD(char *c);
+void escreve_LCD_Flash(const char *c);
+
+void ident_num(unsigned int valor, unsigned char *disp);
+
+char mensagem[] = "DADOS DE 4BITS!\0";
+
 int main()
 {
-	
-	DDRB = 0xFF;   //Define todos os pinos PB0 ate PB3 como OUT
-	DDRC = 0xFF; //Define PC0 e PC1 em OUT
-	
-	iniciar_LCD_4bits();
+	DDRC = 0xFF;
+	DDRB = 0xFF;
 
-	while(1)
-	{
-	}
+	inic_LCD_4bits();
+	escreve_LCD("MOD XXX T:XXHz");
+	cmd_LCD(PULAR_LINHA, 0);
+	cmd_LCD(0xC0, 0);
+	escreve_LCD("MSG: xx.xx.xx.xx");
+
+	for(;;){}
 
 	return 0;
 }
 
-//====================================
-//	FUNCOES
-//====================================
-void iniciar_LCD_4bits()
+
+void cmd_LCD(unsigned char c, char cd)
 {
-	CLR_BIT(PORTC, RS);
-	CLR_BIT(PORTC, E);
+	if(cd==0) //instrução
+		clr_bit(CONTR_LCD,RS);
+	else //caractere
+		set_bit(CONTR_LCD,RS);
 
-	_delay_ms(20);	//Tempo para estabilizar o LCD, datasheet PAG 46 HD44780U
+	#if (nibble_dados )//compila o código para os pinos de dados do LCD nos 4 MSB do PORT
+		DADOS_LCD = (DADOS_LCD & 0x0F)|(0xF0 & c);
+	#else //compila o código para os pinos de dados do LCD nos 4 LSB do PORT
+		DADOS_LCD = (DADOS_LCD & 0xF0)|(c>>4);
+	#endif
 
-	PORTB = (PORTB & 0x0F) | 0x30; 
+	pulso_enable();
 
-	pulse_enbale();
+	#if (nibble_dados) //compila o código para os
+		DADOS_LCD = (DADOS_LCD & 0x0F) | (0xF0 & (c<<4));
+	#else
+		DADOS_LCD = (DADOS_LCD & 0xF0) | (0x0F & c);
+	#endif
+
+	pulso_enable();
+
+	if((cd==0) && (c<4))
+		_delay_ms(2);
+}
+
+void inic_LCD_4bits()
+{
+	clr_bit(CONTR_LCD,RS);
+	clr_bit(CONTR_LCD,E);
+
+	_delay_ms(20);
+
+	#if (nibble_dados)
+		DADOS_LCD = (DADOS_LCD & 0x0F) | 0x30;
+	#else
+		DADOS_LCD = (DADOS_LCD & 0xF0) | 0x03;
+	#endif
+
+	pulso_enable();
 	_delay_ms(5);
-	pulse_enbale();
+	pulso_enable();
 	_delay_us(200);
-	pulse_enbale();
+	pulso_enable();
 
-	PORTB = (PORTB & 0x0F) | 0x20;
+	#if (nibble_dados)
+		DADOS_LCD = (DADOS_LCD & 0x0F) | 0x20;
+	#else
+		DADOS_LCD = (DADOS_LCD & 0xF0) | 0x02;
+	#endif
+	
+	pulso_enable();
+	cmd_LCD(0x28, 0);
 
-	pulse_enbale();
+	cmd_LCD(0x08,0); //desliga o display
+	cmd_LCD(0x01,0); //limpa todo o displayI
+	cmd_LCD(0x0F,0); //mensagem aparente cursor inativo não piscando
+	cmd_LCD(0x80,0); //inicializa cursor na primeira posição a esquerda - 1a linha
+
+}
 
 
+void escreve_LCD(char *c)
+{
+	for (; *c!=0;c++) cmd_LCD(*c,1);
+}
+
+void escreve_LCD_Flash(const char *c)
+{
+	for (;pgm_read_byte(&(*c))!=0;c++) cmd_LCD(pgm_read_byte(&(*c)),1);
+}
+
+void ident_num(unsigned int valor, unsigned char *disp)
+{
+	unsigned char n;
+	for(n=0; n<tam_vetor; n++)
+	disp[n] = 0 + conv_ascii;
+
+	do
+	{
+		*disp = (valor%10) + conv_ascii;
+		valor /=10;
+		disp++;
+	}while (valor!=0);
 }
