@@ -2,7 +2,6 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
-#include <avr/pgmspace.h>
 
 #define set_bit(y,bit) (y|=(1<<bit))
 #define clr_bit(y,bit) (y&=~(1<<bit))
@@ -12,8 +11,8 @@
 #define DADOS_LCD PORTB
 #define nibble_dados 0
 #define CONTR_LCD PORTC
-#define E PC1
-#define RS PC0
+#define E PC0
+#define RS PC1
 
 #define tam_vetor 5
 #define conv_ascii 48
@@ -22,27 +21,24 @@
 
 #define pulso_enable() _delay_us(1); set_bit(CONTR_LCD,E); _delay_us(1); clr_bit(CONTR_LCD,E); _delay_us(45)
 
-//protótipo das funções
 void cmd_LCD(unsigned char c, char cd);
 void inic_LCD_4bits();
 void escreve_LCD(char *c);
-void escreve_LCD_Flash(const char *c);
-
-void ident_num(unsigned int valor, unsigned char *disp);
-
-char mensagem[] = "DADOS DE 4BITS!\0";
+void set_modulacao();
+void set_freq();
 
 int main()
 {
-	DDRC = 0xFF;
-	DDRB = 0xFF;
+	DDRC = 0x03;
+	DDRB = 0x0F;
 
 	inic_LCD_4bits();
-	escreve_LCD("MOD XXX T:XXHz");
-	cmd_LCD(PULAR_LINHA, 0);
-	cmd_LCD(0xC0, 0);
-	escreve_LCD("MSG: xx.xx.xx.xx");
+	
+	escreve_LCD_menu();
+	_delay_ms(2000);
 
+	set_modulacao();
+	
 	for(;;){}
 
 	return 0;
@@ -106,7 +102,7 @@ void inic_LCD_4bits()
 
 	cmd_LCD(0x08,0); //desliga o display
 	cmd_LCD(0x01,0); //limpa todo o displayI
-	cmd_LCD(0x0F,0); //mensagem aparente cursor inativo não piscando
+	cmd_LCD(0x0E,0); //mensagem aparente cursor inativo não piscando
 	cmd_LCD(0x80,0); //inicializa cursor na primeira posição a esquerda - 1a linha
 
 }
@@ -117,21 +113,44 @@ void escreve_LCD(char *c)
 	for (; *c!=0;c++) cmd_LCD(*c,1);
 }
 
-void escreve_LCD_Flash(const char *c)
+void escreve_LCD_menu(const char *c)
 {
-	for (;pgm_read_byte(&(*c))!=0;c++) cmd_LCD(pgm_read_byte(&(*c)),1);
+	inic_LCD_4bits();
+	escreve_LCD("MOD XXX T:XXHz");
+	cmd_LCD(PULAR_LINHA, 0);
+	cmd_LCD(0xC0, 0);
+	escreve_LCD("MSG: xx.xx.xx.xx");
 }
 
-void ident_num(unsigned int valor, unsigned char *disp)
+void set_modulacao()
 {
-	unsigned char n;
-	for(n=0; n<tam_vetor; n++)
-	disp[n] = 0 + conv_ascii;
 
-	do
+	cmd_LCD(0x84, 0);
+
+	int teste = 2;
+
+	for(;;)
 	{
-		*disp = (valor%10) + conv_ascii;
-		valor /=10;
-		disp++;
-	}while (valor!=0);
+		if ( teste == 3 ) teste = 0;
+
+		if( teste == 0 )
+			escreve_LCD(" FM");
+		else if ( teste == 1 )
+			escreve_LCD("AFK");
+		else 
+			escreve_LCD("ASK");
+
+		for(int i=1; i<=3; ++i)
+			cmd_LCD(0x10, 0);
+
+		++teste;
+		_delay_ms(1000);
+	}
+
+	cmd_LCD(0x02, 0);
+}
+
+void set_freq()
+{
+	
 }
