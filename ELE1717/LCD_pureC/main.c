@@ -27,20 +27,7 @@ void escreve_LCD(char *c);
 void set_modulacao();
 void set_freq();
 void set_msg();
-
-char *to_char(int num, unsigned size)
-{
-	size += 1;
-    char *num_char = malloc(1*size);
-    for(int i=size-2; i>=0; --i)
-    {
-            int aux = num % 10;
-            num_char[i] = '0' + aux;
-            num /= 10;
-    }
-	num_char[size-1] = '\0';
-    return num_char;
-}
+char *to_char(int num, unsigned size);
 
 int main()
 {
@@ -183,4 +170,19 @@ void set_msg()
 	for (int i=1; i<=11; ++i)
 		cmd_LCD(0x10, 0);
 	
+}
+
+
+char *to_char(int num, unsigned size)
+{
+	size += 1;
+    char *num_char = malloc(1*size);
+    for(int i=size-2; i>=0; --i)
+    {
+            int aux = num % 10;
+            num_char[i] = '0' + aux;
+            num /= 10;
+    }
+	num_char[size-1] = '\0';
+	return num_char;
 }
