@@ -17,7 +17,7 @@
 #define tam_vetor 5
 #define conv_ascii 48
 
-#define PULAR_LINHA 0xA0
+#define PULAR_LINHA 0xC0
 
 #define pulso_enable() _delay_us(1); set_bit(CONTR_LCD,E); _delay_us(1); clr_bit(CONTR_LCD,E); _delay_us(45)
 
@@ -26,6 +26,21 @@ void inic_LCD_4bits();
 void escreve_LCD(char *c);
 void set_modulacao();
 void set_freq();
+void set_msg();
+
+char *to_char(int num, unsigned size)
+{
+	size += 1;
+    char *num_char = malloc(1*size);
+    for(int i=size-2; i>=0; --i)
+    {
+            int aux = num % 10;
+            num_char[i] = '0' + aux;
+            num /= 10;
+    }
+	num_char[size-1] = '\0';
+    return num_char;
+}
 
 int main()
 {
@@ -38,7 +53,11 @@ int main()
 	_delay_ms(2000);
 
 	set_modulacao();
-	
+	set_freq();
+	set_msg();
+
+	cmd_LCD(0x02, 0);
+
 	for(;;){}
 
 	return 0;
@@ -102,7 +121,7 @@ void inic_LCD_4bits()
 
 	cmd_LCD(0x08,0); //desliga o display
 	cmd_LCD(0x01,0); //limpa todo o displayI
-	cmd_LCD(0x0E,0); //mensagem aparente cursor inativo não piscando
+	cmd_LCD(0x0F,0); //mensagem aparente cursor inativo não piscando
 	cmd_LCD(0x80,0); //inicializa cursor na primeira posição a esquerda - 1a linha
 
 }
@@ -127,12 +146,8 @@ void set_modulacao()
 
 	cmd_LCD(0x84, 0);
 
-	int teste = 2;
-
-	for(;;)
+	for(int teste=0; teste<3; teste++)
 	{
-		if ( teste == 3 ) teste = 0;
-
 		if( teste == 0 )
 			escreve_LCD(" FM");
 		else if ( teste == 1 )
@@ -143,7 +158,6 @@ void set_modulacao()
 		for(int i=1; i<=3; ++i)
 			cmd_LCD(0x10, 0);
 
-		++teste;
 		_delay_ms(1000);
 	}
 
@@ -152,5 +166,21 @@ void set_modulacao()
 
 void set_freq()
 {
+	cmd_LCD(0x8A, 0);
+	escreve_LCD("33");
+	cmd_LCD(0x02, 0);
+}
+
+void set_msg()
+{
+	cmd_LCD(0xC0, 0);
+	for (int i=1; i<=5; ++i)
+		cmd_LCD(0x14, 0);
+
+	_delay_ms(1000);
+
+	escreve_LCD("10.11.01.00");
+	for (int i=1; i<=11; ++i)
+		cmd_LCD(0x10, 0);
 	
 }
