@@ -13,6 +13,10 @@
 void alterar_senha();
 void habilitar_sensor();
 void associar_sensor_zona();
+void habilitar_zona();
+void ajustar_temporizador();
+void ajustar_timeout();
+void ajustar_tempo_sirene();
 
 int main()
 {
@@ -27,6 +31,10 @@ int main()
 		//alterar_senha();
 		//habilitar_sensor();
 		//associar_sensor_zona();
+        //habilitar_zona();
+        //ajustar_temporizador();
+        //ajustar_timeout();
+        ajustar_tempo_sirene();
 	}// FIM DO LOOP
 
 	return 0;
@@ -183,4 +191,169 @@ void associar_sensor_zona()
 	_delay_ms(1000);
 }
 
+/**
+ *	@brief Habilita uma zona
+ * */
+void habilitar_zona()
+{
+    uint8_t leitura = 0x00;
+	leitura = PINC;
 
+	PORTB |= (1<<PB5);
+	//Verifica se pressionou a tecla "P"
+    do
+    {
+    	leitura = PINC;
+    }while((leitura & 0x01) == 0x01);
+
+	//Laco para colocar a senha ATUAL
+
+	//Verifica se pressionou a tecla "A"
+    do
+    {
+    	leitura = PINC;
+        //	Falta colocar a logica para desabilitar sensor
+		//o lugar de pressionar "A" o usuario pressiona "D"
+    }while((leitura & 0x02) == 0x02);
+
+	//Verifica se pressionou a tecla "5"
+    do
+    {
+    	leitura = PINC;
+    }while((leitura & 0x01) == 0x01);
+
+	//Verifica se pressionou a tecla de "1" ate "3"
+    do
+    {
+    	leitura = PINC;
+    }while((leitura & 0x02) == 0x02);
+
+	//Verifica se pressionou a tecla "E"
+    do
+    {
+    	leitura = PINC;
+    }while((leitura & 0x01) == 0x01);
+
+	PORTB ^= (1<<PB5);
+	_delay_ms(1000);
+}
+
+/**
+ *	@brief Ajusta o temporizador
+ * */
+void ajustar_temporizador()
+{
+    uint8_t leitura = 0x00;
+	leitura = PINC;
+
+	PORTB |= (1<<PB5);
+	//Verifica se pressionou a tecla "P"
+    do
+    {
+    	leitura = PINC;
+    }while((leitura & 0x01) == 0x01);
+
+	//Laco para colocar a senha ATUAL
+
+	//Verifica se pressionou a tecla "A"
+    do
+    {
+    	leitura = PINC;
+    }while((leitura & 0x02) == 0x02);
+
+	//Verifica se pressionou a tecla "6"
+    do
+    {
+    	leitura = PINC;
+    }while((leitura & 0x01) == 0x01);
+
+    //Laco para colocar 3 valores de "0" a "9"
+
+	//Verifica se pressionou a tecla "E"
+    do
+    {
+    	leitura = PINC;
+    }while((leitura & 0x02) == 0x02);
+
+	PORTB ^= (1<<PB5);
+	_delay_ms(1000);
+}
+
+/**
+ *	@brief Ajusta o temporizador do timeout
+ * */
+void ajustar_timeout()
+{
+    uint8_t leitura = 0x00;
+	leitura = PINC;
+
+	PORTB |= (1<<PB5);
+	//Verifica se pressionou a tecla "P"
+    do
+    {
+    	leitura = PINC;
+    }while((leitura & 0x01) == 0x01);
+
+	//Laco para colocar a senha ATUAL
+
+	//Verifica se pressionou a tecla "A"
+    do
+    {
+    	leitura = PINC;
+    }while((leitura & 0x02) == 0x02);
+
+	//Verifica se pressionou a tecla "7"
+    do
+    {
+    	leitura = PINC;
+    }while((leitura & 0x01) == 0x01);
+
+    //Laco para colocar 2 valores de "0" a "9"
+
+	//Verifica se pressionou a tecla "E"
+    do
+    {
+    	leitura = PINC;
+    }while((leitura & 0x02) == 0x02);
+
+	PORTB ^= (1<<PB5);
+	_delay_ms(1000);
+}
+
+void ajustar_tempo_sirene()
+{
+    uint8_t leitura = 0x00;
+	leitura = PINC;
+
+	PORTB |= (1<<PB5);
+	//Verifica se pressionou a tecla "P"
+    do
+    {
+    	leitura = PINC;
+    }while((leitura & 0x01) == 0x01);
+
+	//Laco para colocar a senha ATUAL
+
+	//Verifica se pressionou a tecla "A"
+    do
+    {
+    	leitura = PINC;
+    }while((leitura & 0x02) == 0x02);
+
+	//Verifica se pressionou a tecla "8"
+    do
+    {
+    	leitura = PINC;
+    }while((leitura & 0x01) == 0x01);
+
+    //Laco para colocar 3 valores de "0" a "9"
+
+	//Verifica se pressionou a tecla "E"
+    do
+    {
+    	leitura = PINC;
+    }while((leitura & 0x02) == 0x02);
+
+	PORTB ^= (1<<PB5);
+	_delay_ms(1000);
+}
