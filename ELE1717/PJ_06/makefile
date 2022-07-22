@@ -2,8 +2,6 @@ FILENAME   = main
 PORT       = /dev/ttyUSB0
 DEVICE     = atmega328p
 PROGRAMMER = arduino
-
-#Se for usar o arduino nano usar o BAUD a 57600
 BAUD       = 57600
 COMPILE    = avr-gcc -Wall -Os -mmcu=$(DEVICE)
 
