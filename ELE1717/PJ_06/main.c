@@ -37,6 +37,12 @@
 #define false 0x00
 #define true 0x01
 
+//Variaveis para o LCD
+#define DADOS_LCD PORTB
+#define CTR_LCD PORTC
+#define E_LCD PB4
+#define RW_LCD PB5
+
 //variaveis  (acho que devem ser registradores,entao substituir)
 uint16_t senha_digitada = 0;
 uint16_t senha_correta = 0;
@@ -146,6 +152,7 @@ void USART_Transmit(unsigned char data)
 
  void Desativado(void)
  {
+	//Mandar o arquivo LOG
 	if(TstBit(PINB,A))//se botão pressionado
 		PonteiroDeFuncao = InserirSenha;
 	else if(TstBit(PINB, P))
@@ -194,6 +201,7 @@ void Ativado(void)
 		E_A = true;
 		PonteiroDeFuncao = Ativado;
 
+		//Mandar o arquivo LOG
 		for(char *i = &msg_debug[0]; *i != '\0'; ++i)
 			USART_Transmit(*i);
 
@@ -208,4 +216,6 @@ void Programacao(void)
 {
 	SetBit(PORTB, PB5);
 	ClrBit(PORTD, PD2);
+
+	//Mandar o arquivo LOG
 }
