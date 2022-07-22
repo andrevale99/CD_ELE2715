@@ -1,362 +1,211 @@
-/**
- *	Codigo para realizar as logicas da programacao da central
+/*
+ * MDE.c
  *
- *	LEMBRAR DE TROCAR AS VARIAVEIS DE LEITURA COMO AS LOGICAS
- *	DO "DO{}WHILE();", POIS ESTAO PARA LEITURA DE BOTAO, E NAO DO TECLADO
- * */
+ * Created: 16/07/2022 12:40:35
+ * Author : Elke
+ */ 
 
+//Bibliotecas
 #define F_CPU 16000000
 
 #include <avr/io.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
 
-#define set_bit(Y,bit_x) (Y|=(1<<bit_x)) //ativa o bit x da variavel Y
-#define clr_bit(Y,bit_x) (Y&=~(1<<bit_x)) //limpa o bit x da variavel Y
+#define SetBit(RES, BIT)(RES |= (1 << BIT)) // Por BIT em nível alto
+#define ClrBit(RES, BIT)(RES &= ~ (1 << BIT))// Por BIT em nível baixo
+#define TstBit(RES, BIT)(RES &  (1 << BIT)) // testar BIT, retorna 0 ou 1
+#define CplBit(RES, BIT)(RES ^= (1 << BIT)) // Inverter estado do BIT
 
-void alterar_senha();
-void habilitar_sensor();
-void associar_sensor_zona();
-void habilitar_zona();
-void ajustar_temporizador();
-void ajustar_timeout();
-void ajustar_tempo_sirene();
+//UART CALC
+#define BAUD 9600
+#define MYUBRR F_CPU/16/BAUD-1
 
-int main()
+
+//entradas (poderao ser trocadas)
+#define A 0 //Botao de inserir senha
+#define e 1 //Finaliza o estado de Programacao
+#define D 2 //Desassociar alguma coisa
+#define P 3 //Botao para inicializar a Programacao
+#define S 4 //Botao de panico
+#define R 5 //Recuperacao
+#define T 6
+
+//saidas
+#define led 2
+
+#define false 0x00
+#define true 0x01
+
+//variaveis  (acho que devem ser registradores,entao substituir)
+uint16_t senha_digitada = 0;
+uint16_t senha_correta = 0;
+uint16_t senha_mestre = 0;
+
+uint8_t Temporizador_de_ativacao = 0;
+uint8_t timeout = 0;
+uint8_t Temporizador_sirene = 0;
+
+uint8_t E_A = false; //Variavel "booleana"
+
+void (*PonteiroDeFuncao)(); //Ponteiro de funcao da MDE. Ele aponta sempre para a funcao da MDE que deve ser executada.
+
+
+char *msg_debug = "TRABALHO SEBOSO\n";
+//***********************************
+void USART_Transmit(unsigned char data); //Eniva caractere para a uart
+void USART_Init(unsigned int ubrr); //Inicializa a UART
+void setup();
+void Desativado(void);
+void InserirSenha(void);
+void ComparaSenha(void);   //funcao que representa o estado compara_senha na MDE
+void Temporizador (void);   //funcao que representa o estado temporizador na MDE
+void Ativado (void);   //funcao que representa o estado ativado na MDE
+void Recuperacao(void);
+void Programacao(void);
+
+ISR (TIMER1_COMPA_vect)
 {
-	DDRB |= (1<<PB5); //Visualizacao do led (debug)
-	PORTB = 0x00;
-	
-	DDRC |= 0x00; // Coloca os pinos A0 e A1 como entradas
-	PORTC |= 0x03; //Ativa os PULL-UPS 
-	
-	for(;;)
-	{
-		//alterar_senha();
-		//habilitar_sensor();
-		//associar_sensor_zona();
-        //habilitar_zona();
-        //ajustar_temporizador();
-        //ajustar_timeout();
-        ajustar_tempo_sirene();
-	}// FIM DO LOOP
+	PORTB ^= (1<<PB5);
+	TCNT1 = 0;
+}
 
+//===============================================
+int main(void)
+{
+	setup();
+	USART_Init(MYUBRR);
+	
+	PonteiroDeFuncao = Desativado; //aponta para o estado inicial.
+
+	sei(); //Ativar as interrupcoes do arduino
+
+	while(1)
+	{
+		(*PonteiroDeFuncao)();    //chama a função apontada pelo ponteiro de funcao 
+		_delay_ms(100);
+	}
+  
 	return 0;
+ }
+
+//===============================================
+//	CONFIGURACOES
+//===============================================
+void setup() 
+{
+	ClrBit(DDRB, A);
+	ClrBit(DDRB, e);
+	ClrBit(DDRB, T);
+	ClrBit(DDRB, D);
+
+	SetBit(DDRD, led);
+	ClrBit(PORTD, led);
+
+    senha_mestre = 1234;
+
+    Temporizador_de_ativacao = 0;
+
+    timeout = 99;
+
+	Temporizador_sirene = 0;
+
+	senha_digitada = senha_correta = 1234;
 }
 
-/**
- *	@brief Altera a senha da central
- * */
-void alterar_senha()
+void USART_Init(unsigned int ubrr)
 {
-	uint8_t leitura = 0x00; //Variavel para ler as portas
-   
-    leitura = PINC;
+    /*Set baud rate */
+    UBRR0H = (unsigned char)(ubrr>>8);
+    UBRR0L = (unsigned char)ubrr;
+    /*Enable receiver and transmitter */
+    UCSR0B = (1<<RXEN0)|(1<<TXEN0);
+    /* Set frame format: 8data, 2stop bit */
+    UCSR0C = (1<<USBS0)|(3<<UCSZ00);
+}
 
-    PORTB ^= (1<<PB5);
-	//Verifica se pressionou a tecla "P"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x01) == 0x01);
+void USART_Transmit(unsigned char data)
+{
+    /* Wait for empty transmit buffer */
+    while (!(UCSR0A & (1<<UDRE0))) 
+        ;
+    /* Put data into buffer, sends the data */
+    UDR0 = data;
+}
 
-    //Laço de colocar a senha ATUAL
+//=================================
+//	FUNCOES ESTADOS
+//=================================
+ void Recuperacao(void)
+ {
+	senha_mestre = 1234;
+    Temporizador_de_ativacao = 0;
+    timeout = 99;
+	Temporizador_sirene = 0;
+ }
 
-	//Verifica se pressinou "A"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x02) == 0x02);
+ void Desativado(void)
+ {
+	if(TstBit(PINB,A))//se botão pressionado
+		PonteiroDeFuncao = InserirSenha;
+	else if(TstBit(PINB, P))
+		PonteiroDeFuncao = Programacao;
+	else
+		PonteiroDeFuncao = Desativado;
+}
 
-	//Verifica se pressionou as teclas de "2"
-	do
+
+void InserirSenha(void)
+{       
+	//Laco para digitar a senha
+	PonteiroDeFuncao = ComparaSenha;	
+}
+
+
+void ComparaSenha(void){
+	//se botão pressionado
+	if(TstBit(PINB,e) && senha_digitada==senha_correta && !E_A)
 	{
-		leitura = PINC;
-	}while((leitura & 0x01) == 0x01);
-
-
-	//Verifica se pressionou as teclas de "0" ate "3"
-	do
-	{
-		leitura = PINC;
-	}while((leitura & 0x02) == 0x02);
-
-	//Laço para colocar a NOVA SENHA
+		PonteiroDeFuncao = Temporizador;
+	}
+	else
+		PonteiroDeFuncao = Desativado;
 	
-	//Verifica se pressionou as teclas de "E"
-	do
-	{
-		leitura = PINC;
-	}while((leitura & 0x01) == 0x01);
-
-    PORTB ^= (1<<PB5);
-    _delay_ms(1000);
 }
 
-/**
- *	@brief Habilita/Desabilita sensor
- * */
-void habilitar_sensor()
-{
-	uint8_t leitura = 0x00;
 
-	leitura = PINC;
+void Temporizador(void)
+{
+	//se botão pressionado
+	if(TstBit(PINB,e))
+		PonteiroDeFuncao = Ativado;
+	else
+		PonteiroDeFuncao = Temporizador;
 	
-	PORTB |= (1<<PB5);
-	//Verifica se pressionou a tecla "P"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x01) == 0x01);
-
-	//Laço para colocar a senha ATUAL
-
-	//Verifica se pressionou a tecla "A"
-    do
-    {
-    	leitura = PINC;
-		//	Falta colocar a logica para desabilitar sensor
-		//o lugar de pressionar "A" o usuario pressiona "D"
-    }while((leitura & 0x02) == 0x02);
-
-	//Verifica se pressionou a tecla "2"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x01) == 0x01);
-
-	//Verifica se pressionou a tecla de "0" ate "7"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x02) == 0x02);
-
-	//Verifica se pressionou a tecla "E"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x01) == 0x01);
-
-	PORTB &= ~(1<<PB5);
-	_delay_ms(1000);
-
 }
 
-
-/**
- *	@brief Associa um sensor a uma zona
- * */
-void associar_sensor_zona()
+void Ativado(void)
 {
-	uint8_t leitura = 0x00;
-	leitura = PINC;
+	//se botão pressionado
+	if(TstBit(PINB,D)) 
+		PonteiroDeFuncao = InserirSenha;
+	else
+	{
+		E_A = true;
+		PonteiroDeFuncao = Ativado;
 
-	PORTB |= (1<<PB5);
-	//Verifica se pressionou a tecla "P"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x01) == 0x01);
+		for(char *i = &msg_debug[0]; *i != '\0'; ++i)
+			USART_Transmit(*i);
 
-	//Laco para colocar a senha ATUAL
+		E_A = false;
 
-	//Verifica se pressionou a tecla "A"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x02) == 0x02);
-
-	//Verifica se pressionou a tecla "4"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x01) == 0x01);
-
-	//Verifica se pressionou a tecla de "0" ate "7"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x02) == 0x02);
-
-	//Verifica se pressionou a tecla de "1" ate "3"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x01) == 0x01);
-
-
-	//Verifica se pressionou a tecla "E"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x02) == 0x02);
-
-	PORTB ^= (1<<PB5);
-	_delay_ms(1000);
+		if (TstBit(PINB, D))
+			PonteiroDeFuncao = InserirSenha;
+	}	
 }
 
-/**
- *	@brief Habilita uma zona
- * */
-void habilitar_zona()
+void Programacao(void)
 {
-    uint8_t leitura = 0x00;
-	leitura = PINC;
-
-	PORTB |= (1<<PB5);
-	//Verifica se pressionou a tecla "P"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x01) == 0x01);
-
-	//Laco para colocar a senha ATUAL
-
-	//Verifica se pressionou a tecla "A"
-    do
-    {
-    	leitura = PINC;
-        //	Falta colocar a logica para desabilitar sensor
-		//o lugar de pressionar "A" o usuario pressiona "D"
-    }while((leitura & 0x02) == 0x02);
-
-	//Verifica se pressionou a tecla "5"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x01) == 0x01);
-
-	//Verifica se pressionou a tecla de "1" ate "3"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x02) == 0x02);
-
-	//Verifica se pressionou a tecla "E"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x01) == 0x01);
-
-	PORTB ^= (1<<PB5);
-	_delay_ms(1000);
-}
-
-/**
- *	@brief Ajusta o temporizador
- * */
-void ajustar_temporizador()
-{
-    uint8_t leitura = 0x00;
-	leitura = PINC;
-
-	PORTB |= (1<<PB5);
-	//Verifica se pressionou a tecla "P"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x01) == 0x01);
-
-	//Laco para colocar a senha ATUAL
-
-	//Verifica se pressionou a tecla "A"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x02) == 0x02);
-
-	//Verifica se pressionou a tecla "6"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x01) == 0x01);
-
-    //Laco para colocar 3 valores de "0" a "9"
-
-	//Verifica se pressionou a tecla "E"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x02) == 0x02);
-
-	PORTB ^= (1<<PB5);
-	_delay_ms(1000);
-}
-
-/**
- *	@brief Ajusta o temporizador do timeout
- * */
-void ajustar_timeout()
-{
-    uint8_t leitura = 0x00;
-	leitura = PINC;
-
-	PORTB |= (1<<PB5);
-	//Verifica se pressionou a tecla "P"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x01) == 0x01);
-
-	//Laco para colocar a senha ATUAL
-
-	//Verifica se pressionou a tecla "A"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x02) == 0x02);
-
-	//Verifica se pressionou a tecla "7"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x01) == 0x01);
-
-    //Laco para colocar 2 valores de "0" a "9"
-
-	//Verifica se pressionou a tecla "E"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x02) == 0x02);
-
-	PORTB ^= (1<<PB5);
-	_delay_ms(1000);
-}
-
-void ajustar_tempo_sirene()
-{
-    uint8_t leitura = 0x00;
-	leitura = PINC;
-
-	PORTB |= (1<<PB5);
-	//Verifica se pressionou a tecla "P"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x01) == 0x01);
-
-	//Laco para colocar a senha ATUAL
-
-	//Verifica se pressionou a tecla "A"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x02) == 0x02);
-
-	//Verifica se pressionou a tecla "8"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x01) == 0x01);
-
-    //Laco para colocar 3 valores de "0" a "9"
-
-	//Verifica se pressionou a tecla "E"
-    do
-    {
-    	leitura = PINC;
-    }while((leitura & 0x02) == 0x02);
-
-	PORTB ^= (1<<PB5);
-	_delay_ms(1000);
+	SetBit(PORTB, PB5);
+	ClrBit(PORTD, PD2);
 }
