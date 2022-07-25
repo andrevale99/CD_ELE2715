@@ -6,30 +6,29 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
-ISR ()
+ISR(TIMER1_OVF_vect)
 {
-
+	PORTB ^= (1<<PB5);
+	TCNT1 = 62500;
 }
 
 int main (void)
 {
   
-  	DDRC &= ~(1 << PC0);
-  	PORTC |= (1 << PC0);
+  	DDRB |= (1 << PB1);
+	PORTB |= 0X00;
 
-	DDRB |= (1 << PB5);
-	PORTB = 0x00;
-
-	PCICR |= (1 << PCIE0);
-
-  	uint8_t pin = 0;
+	TCCR1A = 0b10100010;
+	//PWM não invertido nos pinos OC1A e OC1B
+	TCCR1B = 0b00011001;
+	//liga TC1, prescaler = 1
+	ICR1 = 35000;
+	//valor máximo para contagem
+	OCR1A = 1000;
+	//controle do ciclo ativo do PWM 0C1A
+  	
   	while(1) 
   	{
-		pin = PINC;
-		if ((pin & 0x01) == 0x01)
-			PORTB ^= (1 << PB5);
-	
-		_delay_ms(100);
   	}
 
   	return 0;
