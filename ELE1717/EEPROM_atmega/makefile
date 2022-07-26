@@ -1,5 +1,4 @@
 FILENAME   = main
-FILENAME2  = LCD
 PORT       = /dev/ttyUSB0
 DEVICE     = atmega328p
 PROGRAMMER = arduino
@@ -11,8 +10,7 @@ default: compile upload clean
 
 compile:
 	$(COMPILE) -c $(FILENAME).c -o $(FILENAME).o
-	$(COMPILE) -c $(FILENAME2).c -o $(FILENAME2).o
-	$(COMPILE) -o $(FILENAME).elf $(FILENAME).o $(FILENAME2).o
+	$(COMPILE) -o $(FILENAME).elf $(FILENAME).o
 	avr-objcopy -j .text -j .data -O ihex $(FILENAME).elf $(FILENAME).hex 
 	avr-size --format=avr --mcu=$(DEVICE) $(FILENAME).elf
 
@@ -21,6 +19,5 @@ upload:
 
 clean:
 	rm $(FILENAME).o
-	rm $(FILENAME2).o
 	rm $(FILENAME).elf
 	rm $(FILENAME).hex

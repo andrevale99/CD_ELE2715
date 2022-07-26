@@ -12,6 +12,8 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
+#include "LCD.h"
+
 #define SetBit(RES, BIT)(RES |= (1 << BIT)) // Por BIT em nível alto
 #define ClrBit(RES, BIT)(RES &= ~ (1 << BIT))// Por BIT em nível baixo
 #define TstBit(RES, BIT)(RES &  (1 << BIT)) // testar BIT, retorna 0 ou 1
@@ -57,10 +59,13 @@ uint8_t E_A = false; //Variavel "booleana"
 void (*PonteiroDeFuncao)(); //Ponteiro de funcao da MDE. Ele aponta sempre para a funcao da MDE que deve ser executada.
 
 
-char *msg_debug = "TRABALHO SEBOSO\n";
+char *msg_log = "USER 250722 2149\n"; //Desativado
+char *msg_log2 = "USER 222222 1010\n"; //Ativado
+char *msg_log3 = "USER 666666 2222\n"; //Prog
 //***********************************
 void USART_Transmit(unsigned char data); //Eniva caractere para a uart
 void USART_Init(unsigned int ubrr); //Inicializa a UART
+void send_log(char *m);
 void setup();
 void Desativado(void);
 void InserirSenha(void);
@@ -84,12 +89,17 @@ int main(void)
 	
 	PonteiroDeFuncao = Desativado; //aponta para o estado inicial.
 
+	inic_LCD_4bits();
+
 	sei(); //Ativar as interrupcoes do arduino
 
 	while(1)
 	{
 		(*PonteiroDeFuncao)();    //chama a função apontada pelo ponteiro de funcao 
 		_delay_ms(100);
+		
+		USART_Transmit(E_A+'0');
+		USART_Transmit('\n');
 	}
   
 	return 0;
@@ -100,13 +110,17 @@ int main(void)
 //===============================================
 void setup() 
 {
-	ClrBit(DDRB, A);
-	ClrBit(DDRB, e);
-	ClrBit(DDRB, T);
-	ClrBit(DDRB, D);
+	ClrBit(DDRC, A);
+	ClrBit(DDRC, e);
+	ClrBit(DDRC, D);
+	ClrBit(DDRC, P);
 
-	SetBit(DDRD, led);
-	ClrBit(PORTD, led);
+	SetBit(PORTC, A);
+	SetBit(PORTC, e);
+	SetBit(PORTC, D);
+	SetBit(PORTC, P);
+
+	DDRB |= 0x1F;
 
     senha_mestre = 1234;
 
@@ -116,7 +130,10 @@ void setup()
 
 	Temporizador_sirene = 0;
 
-	senha_digitada = senha_correta = 1234;
+	E_A = false;
+
+	senha_digitada = 1234;
+	senha_correta = 1234;
 }
 
 void USART_Init(unsigned int ubrr)
@@ -139,43 +156,74 @@ void USART_Transmit(unsigned char data)
     UDR0 = data;
 }
 
+void send_log(char *m)
+{
+	for (char *i = &m[0]; *i!='\0'; ++i)
+		USART_Transmit(*i);
+}
+
 //=================================
 //	FUNCOES ESTADOS
 //=================================
  void Recuperacao(void)
  {
+	escreve_LCD("Recuperacao");
+	cmd_LCD(RETURN_HOME, 0);
+
 	senha_mestre = 1234;
     Temporizador_de_ativacao = 0;
     timeout = 99;
 	Temporizador_sirene = 0;
+
+	cmd_LCD(CLEAR_DISPLAY, 0);
  }
 
  void Desativado(void)
  {
-	//Mandar o arquivo LOG
-	if(TstBit(PINB,A))//se botão pressionado
+	escreve_LCD("Desativado");
+	cmd_LCD(RETURN_HOME, 0);
+	
+	send_log(&msg_log[0]);
+
+	if(!TstBit(PINC, A))//se botão pressionado
+	{
 		PonteiroDeFuncao = InserirSenha;
-	else if(TstBit(PINB, P))
+		cmd_LCD(CLEAR_DISPLAY, 0);
+	}
+	else if(!TstBit(PINC, P))
+	{
 		PonteiroDeFuncao = Programacao;
+		cmd_LCD(CLEAR_DISPLAY, 0);
+	}
+
 	else
 		PonteiroDeFuncao = Desativado;
 }
 
 
 void InserirSenha(void)
-{       
+{     
+	escreve_LCD("Inserir Senha");
+	cmd_LCD(RETURN_HOME, 0);
+	
+	_delay_ms(1000); //DEBUG
+
+	cmd_LCD(CLEAR_DISPLAY, 0);
 	//Laco para digitar a senha
 	PonteiroDeFuncao = ComparaSenha;	
 }
 
-
+//AJEITAR ESSA PARTE
 void ComparaSenha(void){
 	//se botão pressionado
-	if(TstBit(PINB,e) && senha_digitada==senha_correta && !E_A)
+	//if(!TstBit(PINC, e) && senha_digitada == senha_correta && !E_A)
+	if(!TstBit(PINC, e))
 	{
-		PonteiroDeFuncao = Temporizador;
+		PonteiroDeFuncao = Programacao;
+		cmd_LCD(CLEAR_DISPLAY, 0);
 	}
 	else
+		cmd_LCD(CLEAR_DISPLAY, 0);
 		PonteiroDeFuncao = Desativado;
 	
 }
@@ -183,39 +231,66 @@ void ComparaSenha(void){
 
 void Temporizador(void)
 {
+	escreve_LCD("Temporizador");
+	cmd_LCD(RETURN_HOME, 0);
 	//se botão pressionado
-	if(TstBit(PINB,e))
+	if(!TstBit(PINC, e))
+	{
 		PonteiroDeFuncao = Ativado;
+		cmd_LCD(CLEAR_DISPLAY, 0);
+	}
 	else
+	{
 		PonteiroDeFuncao = Temporizador;
+		cmd_LCD(CLEAR_DISPLAY, 0);
+	}
 	
 }
 
 void Ativado(void)
 {
+	escreve_LCD("Ativado");
+	cmd_LCD(RETURN_HOME, 0);
 	//se botão pressionado
-	if(TstBit(PINB,D)) 
+	
+	_delay_ms(1000); //DEBUG
+
+	if(!TstBit(PINC, D)) 
+	{
 		PonteiroDeFuncao = InserirSenha;
+		cmd_LCD(CLEAR_DISPLAY, 0);
+	}
 	else
 	{
 		E_A = true;
 		PonteiroDeFuncao = Ativado;
 
-		//Mandar o arquivo LOG
-		for(char *i = &msg_debug[0]; *i != '\0'; ++i)
-			USART_Transmit(*i);
+		send_log(&msg_log2[0]);
 
-		E_A = false;
+		E_A = false; //N entendi essa parte
 
-		if (TstBit(PINB, D))
+		if (TstBit(PINC, D))
+		{
 			PonteiroDeFuncao = InserirSenha;
+			cmd_LCD(CLEAR_DISPLAY, 0);
+		}
 	}	
 }
 
 void Programacao(void)
 {
+	cmd_LCD(CLEAR_DISPLAY, 0);
+	escreve_LCD("Programacao");
+	cmd_LCD(RETURN_HOME, 0);
+	
 	SetBit(PORTB, PB5);
 	ClrBit(PORTD, PD2);
+	
+	send_log(&msg_log3[0]);
 
+	_delay_ms(1000);//DEBUG
+
+	cmd_LCD(CLEAR_DISPLAY, 0);
+	PonteiroDeFuncao = Desativado;
 	//Mandar o arquivo LOG
 }
