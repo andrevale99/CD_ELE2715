@@ -39,12 +39,6 @@
 #define false 0x00
 #define true 0x01
 
-//Variaveis para o LCD
-#define DADOS_LCD PORTB
-#define CTR_LCD PORTC
-#define E_LCD PB4
-#define RW_LCD PB5
-
 //variaveis  (acho que devem ser registradores,entao substituir)
 uint16_t senha_digitada = 0;
 uint16_t senha_correta = 0;
@@ -55,6 +49,7 @@ uint8_t timeout = 0;
 uint8_t Temporizador_sirene = 0;
 
 uint8_t E_A = false; //Variavel "booleana"
+uint8_t send_log_bool = false;
 
 void (*PonteiroDeFuncao)(); //Ponteiro de funcao da MDE. Ele aponta sempre para a funcao da MDE que deve ser executada.
 
@@ -75,10 +70,10 @@ void Ativado (void);   //funcao que representa o estado ativado na MDE
 void Recuperacao(void);
 void Programacao(void);
 
-ISR (TIMER1_COMPA_vect)
+volatile uint16_t cont = 0;
+ISR (TIMER0_OVF_vect)
 {
-	PORTB ^= (1<<PB5);
-	TCNT1 = 0;
+	PORTD ^= (1<<PD7);
 }
 
 //===============================================
@@ -86,6 +81,9 @@ int main(void)
 {
 	setup();
 	USART_Init(MYUBRR);
+
+	DDRD |= (1<<PD7);
+	PORTD |= (1<<PD7);
 	
 	PonteiroDeFuncao = Desativado; //aponta para o estado inicial.
 
@@ -96,10 +94,7 @@ int main(void)
 	while(1)
 	{
 		(*PonteiroDeFuncao)();    //chama a função apontada pelo ponteiro de funcao 
-		_delay_ms(100);
-		
-		USART_Transmit(E_A+'0');
-		USART_Transmit('\n');
+		//_delay_ms(100);
 	}
   
 	return 0;
@@ -131,9 +126,16 @@ void setup()
 	Temporizador_sirene = 0;
 
 	E_A = false;
+	send_log_bool = false;
 
 	senha_digitada = 1234;
 	senha_correta = 1234;
+	
+	TCCR0B |= (1 << CS02) ;
+
+	TIMSK0 |= (1 << TOIE0);
+
+	TCNT0 = 0;
 }
 
 void USART_Init(unsigned int ubrr)
@@ -183,7 +185,10 @@ void send_log(char *m)
 	escreve_LCD("Desativado");
 	cmd_LCD(RETURN_HOME, 0);
 	
-	send_log(&msg_log[0]);
+	if (send_log_bool == false)
+		send_log(&msg_log[0]);
+
+	send_log_bool = true;
 
 	if(!TstBit(PINC, A))//se botão pressionado
 	{
@@ -273,7 +278,10 @@ void Ativado(void)
 		E_A = true;
 		PonteiroDeFuncao = Ativado;
 
+		if (send_log_bool == false)
 		send_log(&msg_log2[0]);
+		
+		send_log_bool = true;
 
 		E_A = false; //N entendi essa parte
 
@@ -291,10 +299,10 @@ void Programacao(void)
 	escreve_LCD("Programacao");
 	cmd_LCD(RETURN_HOME, 0);
 	
-	SetBit(PORTB, PB5);
-	ClrBit(PORTD, PD2);
-	
-	send_log(&msg_log3[0]);
+	if (send_log_bool == false)
+		send_log(&msg_log3[0]);
+		
+	send_log_bool = true;
 
 	_delay_ms(1000);//DEBUG
 
