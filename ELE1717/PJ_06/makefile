@@ -3,6 +3,10 @@ FILENAME2  = LCD
 PORT       = /dev/ttyUSB0
 DEVICE     = atmega168
 PROGRAMMER = arduino
+
+#Se utlizar o Atmega328p na placa Arduino UNO o baud rate deve ser 115200
+#Se utilizar o Atmega328p nano o baud rate deve ser 57600
+#Se utilizar o Atmega168 no nano o baud rate deve ser 19200
 BAUD       = 19200
 COMPILE    = avr-gcc -Wall -Os -mmcu=$(DEVICE)
 
@@ -17,7 +21,8 @@ compile:
 	avr-size --format=avr --mcu=$(DEVICE) $(FILENAME).elf
 
 upload:
-	avrdude -v -p $(DEVICE) -c $(PROGRAMMER) -P $(PORT) -b $(BAUD) -U flash:w:$(FILENAME).hex:i
+	avrdude -v -p $(DEVICE) -c $(PROGRAMMER) -P $(PORT) -b $(BAUD) \\ 
+			-U flash:w:$(FILENAME).hex:i
 
 clean:
 	rm *.o

@@ -14,8 +14,8 @@
 
 #include "LCD.h"
 
-#define SetBit(RES, BIT)(RES |= (1 << BIT)) // Por BIT em nível alto
-#define ClrBit(RES, BIT)(RES &= ~ (1 << BIT))// Por BIT em nível baixo
+#define SetBit(RES, BIT)(RES |= (1 << BIT)) // Por BIT em nivel alto
+#define ClrBit(RES, BIT)(RES &= ~ (1 << BIT))// Por BIT em nivel baixo
 #define TstBit(RES, BIT)(RES &  (1 << BIT)) // testar BIT, retorna 0 ou 1
 #define CplBit(RES, BIT)(RES ^= (1 << BIT)) // Inverter estado do BIT
 
@@ -51,7 +51,9 @@ uint8_t Temporizador_sirene = 0;
 uint8_t E_A = false; //Variavel "booleana"
 uint8_t send_log_bool = true;
 
-void (*PonteiroDeFuncao)(); //Ponteiro de funcao da MDE. Ele aponta sempre para a funcao da MDE que deve ser executada.
+//Ponteiro de funcao da MDE. 
+//Ele aponta sempre para a funcao da MDE que deve ser executada.
+void (*PonteiroDeFuncao)(); 
 
 
 char *msg_log = "USER 250722 2149SS\n"; //Desativado
@@ -91,7 +93,7 @@ int main(void)
 
 	while(1)
 	{
-		(*PonteiroDeFuncao)();    //chama a função apontada pelo ponteiro de funcao 
+		(*PonteiroDeFuncao)();    //chama a funcao apontada pelo ponteiro de funcao 
 		//_delay_ms(100);
 	}
   
@@ -277,7 +279,7 @@ void Temporizador(void)
 {
 	escreve_LCD("Temporizador");
 	cmd_LCD(RETURN_HOME, 0);
-	//se botão pressionado
+	//se botao pressionado
 	if(!TstBit(PIND, e))
 	{
 		cmd_LCD(CLEAR_DISPLAY, 0);
@@ -303,6 +305,13 @@ void Ativado(void)
 		PonteiroDeFuncao = InserirSenha;
 		cmd_LCD(CLEAR_DISPLAY, 0);
 	}
+	else if(!TstBit(PIND, S))
+	{
+		sei();
+		cmd_LCD(CLEAR_DISPLAY, 0);
+		_delay_ms(1000);
+		PonteiroDeFuncao = Panico;
+	}
 	else
 	{
 		E_A = true;
@@ -315,13 +324,7 @@ void Ativado(void)
 
 		E_A = false;
 	}	
-	else if(!TstBit(PIND, S))
-	{
-		sei();
-		cmd_LCD(CLEAR_DISPLAY, 0);
-		_delay_ms(1000);
-		PonteiroDeFuncao = Panico;
-	}
+	
 }
 
 void Programacao(void)
@@ -340,7 +343,7 @@ void Programacao(void)
 	cmd_LCD(CLEAR_DISPLAY, 0);
 	PonteiroDeFuncao = Desativado;
 
-	else if(!TstBit(PIND, S))
+	if(!TstBit(PIND, S))
 	{
 		sei();
 		cmd_LCD(CLEAR_DISPLAY, 0);
