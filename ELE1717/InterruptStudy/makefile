@@ -1,8 +1,8 @@
 FILENAME   = main
 PORT       = /dev/ttyUSB0
-DEVICE     = atmega328p
+DEVICE     = atmega168
 PROGRAMMER = arduino
-BAUD       = 57600
+BAUD       = 19200
 COMPILE    = avr-gcc -Wall -Os -mmcu=$(DEVICE)
 
 
