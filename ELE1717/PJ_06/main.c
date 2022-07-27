@@ -54,9 +54,9 @@ uint8_t send_log_bool = true;
 void (*PonteiroDeFuncao)(); //Ponteiro de funcao da MDE. Ele aponta sempre para a funcao da MDE que deve ser executada.
 
 
-char *msg_log = "USER 250722 2149\n"; //Desativado
-char *msg_log2 = "USER 222222 1010\n"; //Ativado
-char *msg_log3 = "USER 666666 2222\n"; //Prog
+char *msg_log = "USER 250722 2149SS\n"; //Desativado
+char *msg_log2 = "USER 222222 1010SS\n"; //Ativado
+char *msg_log3 = "USER 666666 2222SS\n"; //Prog
 //***********************************
 void USART_Transmit(unsigned char data); //Eniva caractere para a uart
 void USART_Init(unsigned int ubrr); //Inicializa a UART
