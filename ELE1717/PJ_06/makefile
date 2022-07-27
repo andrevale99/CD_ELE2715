@@ -20,7 +20,6 @@ upload:
 	avrdude -v -p $(DEVICE) -c $(PROGRAMMER) -P $(PORT) -b $(BAUD) -U flash:w:$(FILENAME).hex:i
 
 clean:
-	rm $(FILENAME).o
-	rm $(FILENAME2).o
-	rm $(FILENAME).elf
-	rm $(FILENAME).hex
+	rm *.o
+	rm *.elf
+	rm *.hex
