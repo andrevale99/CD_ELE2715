@@ -49,7 +49,7 @@ uint8_t timeout = 0;
 uint8_t Temporizador_sirene = 0;
 
 uint8_t E_A = false; //Variavel "booleana"
-uint8_t send_log_bool = false;
+uint8_t send_log_bool = true;
 
 void (*PonteiroDeFuncao)(); //Ponteiro de funcao da MDE. Ele aponta sempre para a funcao da MDE que deve ser executada.
 
@@ -61,7 +61,9 @@ char *msg_log3 = "USER 666666 2222\n"; //Prog
 void USART_Transmit(unsigned char data); //Eniva caractere para a uart
 void USART_Init(unsigned int ubrr); //Inicializa a UART
 void send_log(char *m);
+
 void setup();
+
 void Desativado(void);
 void InserirSenha(void);
 void ComparaSenha(void);   //funcao que representa o estado compara_senha na MDE
@@ -69,11 +71,12 @@ void Temporizador (void);   //funcao que representa o estado temporizador na MDE
 void Ativado (void);   //funcao que representa o estado ativado na MDE
 void Recuperacao(void);
 void Programacao(void);
+void Panico(void);
 
-volatile uint16_t cont = 0;
 ISR (TIMER0_OVF_vect)
 {
-	PORTD ^= (1<<PD7);
+	if(TstBit(PIND, S))
+		PORTD ^= (1 << PD7);
 }
 
 //===============================================
@@ -81,15 +84,10 @@ int main(void)
 {
 	setup();
 	USART_Init(MYUBRR);
-
-	DDRD |= (1<<PD7);
-	PORTD |= (1<<PD7);
 	
 	PonteiroDeFuncao = Desativado; //aponta para o estado inicial.
 
 	inic_LCD_4bits();
-
-	sei(); //Ativar as interrupcoes do arduino
 
 	while(1)
 	{
@@ -105,37 +103,43 @@ int main(void)
 //===============================================
 void setup() 
 {
-	ClrBit(DDRC, A);
-	ClrBit(DDRC, e);
-	ClrBit(DDRC, D);
-	ClrBit(DDRC, P);
+	ClrBit(DDRD, A);
+	ClrBit(DDRD, e);
+	ClrBit(DDRD, D);
+	ClrBit(DDRD, P);
+	ClrBit(DDRD, S);
 
-	SetBit(PORTC, A);
-	SetBit(PORTC, e);
-	SetBit(PORTC, D);
-	SetBit(PORTC, P);
+	SetBit(PORTD, A);
+	SetBit(PORTD, e);
+	SetBit(PORTD, D);
+	SetBit(PORTD, P);
+	SetBit(PORTD, S);
 
+	//Configura as portas do LCD como saida
+	//eh redundante por causa do LCD.c e LCD.h
 	DDRB |= 0x1F;
+
+	//Saida para Buzzer
+	DDRD |= (1<<PD7);
+	PORTD |= (1<<PD7);
 
     senha_mestre = 1234;
 
     Temporizador_de_ativacao = 0;
-
     timeout = 99;
-
 	Temporizador_sirene = 0;
 
 	E_A = false;
-	send_log_bool = false;
+	send_log_bool = true;
 
 	senha_digitada = 1234;
 	senha_correta = 1234;
 	
 	TCCR0B |= (1 << CS02) ;
-
 	TIMSK0 |= (1 << TOIE0);
-
 	TCNT0 = 0;
+
+	cli();
 }
 
 void USART_Init(unsigned int ubrr)
@@ -185,22 +189,29 @@ void send_log(char *m)
 	escreve_LCD("Desativado");
 	cmd_LCD(RETURN_HOME, 0);
 	
-	if (send_log_bool == false)
+	if (send_log_bool == true)
 		send_log(&msg_log[0]);
 
-	send_log_bool = true;
+	send_log_bool = false;
 
-	if(!TstBit(PINC, A))//se botão pressionado
+	if(!TstBit(PIND, A))//se botão pressionado
 	{
 		PonteiroDeFuncao = InserirSenha;
 		cmd_LCD(CLEAR_DISPLAY, 0);
 	}
-	else if(!TstBit(PINC, P))
+	else if(!TstBit(PIND, P))
 	{
-		PonteiroDeFuncao = Programacao;
 		cmd_LCD(CLEAR_DISPLAY, 0);
+		send_log_bool = true;
+		PonteiroDeFuncao = Programacao;
 	}
-
+	else if(!TstBit(PIND, S))
+	{
+		sei();
+		cmd_LCD(CLEAR_DISPLAY, 0);
+		_delay_ms(1000);
+		PonteiroDeFuncao = Panico;
+	}
 	else
 		PonteiroDeFuncao = Desativado;
 }
@@ -212,7 +223,7 @@ void InserirSenha(void)
 	cmd_LCD(RETURN_HOME, 0);
 
 	//Laco para digitar a senha
-	if (!TstBit(PINC, e))
+	if (!TstBit(PIND, e))
 	{
 		cmd_LCD(CLEAR_DISPLAY, 0);
 		PonteiroDeFuncao = ComparaSenha;	
@@ -221,20 +232,21 @@ void InserirSenha(void)
 
 //AJEITAR ESSA PARTE
 void ComparaSenha(void){
-	//se botão pressionado
-	//if(!TstBit(PINC, e) && senha_digitada == senha_correta && !E_A)
+
 	escreve_LCD("ComparaSenha");
 	cmd_LCD(RETURN_HOME, 0);
 
-	_delay_ms(1000);
+	_delay_ms(500);
 
-	if(!TstBit(PINC, e))
+	if(!TstBit(PIND, e))
 	{
 		if(senha_digitada == senha_correta)
 		{
 			cmd_LCD(CLEAR_DISPLAY, 0);
 			escreve_LCD("SENHA CORRETA");
-			_delay_ms(1000); //DEBUG
+
+			_delay_ms(1000);
+
 			cmd_LCD(CLEAR_DISPLAY, 0);
 			PonteiroDeFuncao = Temporizador;
 		}
@@ -252,14 +264,12 @@ void Temporizador(void)
 	escreve_LCD("Temporizador");
 	cmd_LCD(RETURN_HOME, 0);
 	//se botão pressionado
-	/*if(!TstBit(PINC, e))
+	if(!TstBit(PIND, e))
 	{
 		cmd_LCD(CLEAR_DISPLAY, 0);
+		send_log_bool = true;
 		PonteiroDeFuncao = Ativado;
 	}
-	else*/
-		PonteiroDeFuncao = Temporizador;
-	
 }
 
 void Ativado(void)
@@ -268,7 +278,7 @@ void Ativado(void)
 	cmd_LCD(RETURN_HOME, 0);
 	//se botão pressionado
 
-	if(!TstBit(PINC, D)) 
+	if(!TstBit(PIND, D)) 
 	{
 		PonteiroDeFuncao = InserirSenha;
 		cmd_LCD(CLEAR_DISPLAY, 0);
@@ -278,18 +288,12 @@ void Ativado(void)
 		E_A = true;
 		PonteiroDeFuncao = Ativado;
 
-		if (send_log_bool == false)
+		if (send_log_bool == true)
 		send_log(&msg_log2[0]);
 		
-		send_log_bool = true;
+		send_log_bool = false;
 
 		E_A = false; //N entendi essa parte
-
-		if (TstBit(PINC, D))
-		{
-			PonteiroDeFuncao = InserirSenha;
-			cmd_LCD(CLEAR_DISPLAY, 0);
-		}
 	}	
 }
 
@@ -304,9 +308,21 @@ void Programacao(void)
 		
 	send_log_bool = true;
 
-	_delay_ms(1000);//DEBUG
+	_delay_ms(500);
 
 	cmd_LCD(CLEAR_DISPLAY, 0);
 	PonteiroDeFuncao = Desativado;
 	//Mandar o arquivo LOG
+}
+
+void Panico(void)
+{
+	if(!TstBit(PIND, S))
+	{	
+		cli();
+		_delay_ms(500);
+		PonteiroDeFuncao = Desativado;
+		send_log_bool = true;
+		cmd_LCD(CLEAR_DISPLAY, 0);
+	}
 }
