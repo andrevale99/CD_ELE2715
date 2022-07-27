@@ -26,8 +26,8 @@
 
 #define pulso_enable() _delay_us(1); SetBit(CONTR_LCD,E); _delay_us(1); ClrBit(CONTR_LCD,E); _delay_us(45)
 
-void cmd_LCD(unsigned char c, char cd);
 void inic_LCD_4bits();
+void cmd_LCD(unsigned char c, char cd);
 void escreve_LCD(char *c);
 
 #endif

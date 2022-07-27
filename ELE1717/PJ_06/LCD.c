@@ -1,32 +1,5 @@
 #include "LCD.h"
 
-void cmd_LCD(unsigned char c, char cd)
-{
-	if(cd==0) //instrução
-		ClrBit(CONTR_LCD,RS);
-	else //caractere
-		SetBit(CONTR_LCD,RS);
-
-	#if (nibble_dados )//compila o código para os pinos de dados do LCD nos 4 MSB do PORT
-		DADOS_LCD = (DADOS_LCD & 0x0F)|(0xF0 & c);
-	#else //compila o código para os pinos de dados do LCD nos 4 LSB do PORT
-		DADOS_LCD = (DADOS_LCD & 0xF0)|(c>>4);
-	#endif
-
-	pulso_enable();
-
-	#if (nibble_dados) //compila o código para os
-		DADOS_LCD = (DADOS_LCD & 0x0F) | (0xF0 & (c<<4));
-	#else
-		DADOS_LCD = (DADOS_LCD & 0xF0) | (0x0F & c);
-	#endif
-
-	pulso_enable();
-
-	if((cd==0) && (c<4))
-		_delay_ms(2);
-}
-
 void inic_LCD_4bits()
 {
 	ClrBit(CONTR_LCD,RS);
@@ -60,6 +33,33 @@ void inic_LCD_4bits()
 	cmd_LCD(0x0F,0); //mensagem aparente cursor inativo não piscando
 	cmd_LCD(0x80,0); //inicializa cursor na primeira posição a esquerda - 1a linha
 
+}
+
+void cmd_LCD(unsigned char c, char cd)
+{
+	if(cd==0) //instrução
+		ClrBit(CONTR_LCD,RS);
+	else //caractere
+		SetBit(CONTR_LCD,RS);
+
+	#if (nibble_dados )//compila o código para os pinos de dados do LCD nos 4 MSB do PORT
+		DADOS_LCD = (DADOS_LCD & 0x0F)|(0xF0 & c);
+	#else //compila o código para os pinos de dados do LCD nos 4 LSB do PORT
+		DADOS_LCD = (DADOS_LCD & 0xF0)|(c>>4);
+	#endif
+
+	pulso_enable();
+
+	#if (nibble_dados) //compila o código para os
+		DADOS_LCD = (DADOS_LCD & 0x0F) | (0xF0 & (c<<4));
+	#else
+		DADOS_LCD = (DADOS_LCD & 0xF0) | (0x0F & c);
+	#endif
+
+	pulso_enable();
+
+	if((cd==0) && (c<4))
+		_delay_ms(2);
 }
 
 
