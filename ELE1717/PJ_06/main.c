@@ -194,7 +194,7 @@ void send_log(char *m)
 
 	send_log_bool = false;
 
-	if(!TstBit(PIND, A))//se botão pressionado
+	if(!TstBit(PIND, A))
 	{
 		PonteiroDeFuncao = InserirSenha;
 		cmd_LCD(CLEAR_DISPLAY, 0);
@@ -223,14 +223,21 @@ void InserirSenha(void)
 	cmd_LCD(RETURN_HOME, 0);
 
 	//Laco para digitar a senha
+
 	if (!TstBit(PIND, e))
 	{
 		cmd_LCD(CLEAR_DISPLAY, 0);
 		PonteiroDeFuncao = ComparaSenha;	
 	}
+	else if(!TstBit(PIND, S))
+	{
+		sei();
+		cmd_LCD(CLEAR_DISPLAY, 0);
+		_delay_ms(1000);
+		PonteiroDeFuncao = Panico;
+	}
 }
 
-//AJEITAR ESSA PARTE
 void ComparaSenha(void){
 
 	escreve_LCD("ComparaSenha");
@@ -256,6 +263,13 @@ void ComparaSenha(void){
 			escreve_LCD("SENHA INCORRETA");
 		}
 	}
+	else if(!TstBit(PIND, S))
+	{
+		sei();
+		cmd_LCD(CLEAR_DISPLAY, 0);
+		_delay_ms(1000);
+		PonteiroDeFuncao = Panico;
+	}
 }
 
 
@@ -270,13 +284,19 @@ void Temporizador(void)
 		send_log_bool = true;
 		PonteiroDeFuncao = Ativado;
 	}
+	else if(!TstBit(PIND, S))
+	{
+		sei();
+		cmd_LCD(CLEAR_DISPLAY, 0);
+		_delay_ms(1000);
+		PonteiroDeFuncao = Panico;
+	}
 }
 
 void Ativado(void)
 {
 	escreve_LCD("Ativado");
 	cmd_LCD(RETURN_HOME, 0);
-	//se botão pressionado
 
 	if(!TstBit(PIND, D)) 
 	{
@@ -293,8 +313,15 @@ void Ativado(void)
 		
 		send_log_bool = false;
 
-		E_A = false; //N entendi essa parte
+		E_A = false;
 	}	
+	else if(!TstBit(PIND, S))
+	{
+		sei();
+		cmd_LCD(CLEAR_DISPLAY, 0);
+		_delay_ms(1000);
+		PonteiroDeFuncao = Panico;
+	}
 }
 
 void Programacao(void)
@@ -312,7 +339,14 @@ void Programacao(void)
 
 	cmd_LCD(CLEAR_DISPLAY, 0);
 	PonteiroDeFuncao = Desativado;
-	//Mandar o arquivo LOG
+
+	else if(!TstBit(PIND, S))
+	{
+		sei();
+		cmd_LCD(CLEAR_DISPLAY, 0);
+		_delay_ms(1000);
+		PonteiroDeFuncao = Panico;
+	}
 }
 
 void Panico(void)
