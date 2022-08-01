@@ -1,6 +1,6 @@
 # Circuitos_integrado
 
-Repositório para o estudo da linguagem VHDL. 
+Repositório para o estudo da linguagem VHDL da matéria de Circuitos Digitais (ELE2715) da UFRN. 
 
 Muitos dos códigos podem haver erros de lógica, portanto, verifique antes de utiliza-lo em alguma simulação.
 
