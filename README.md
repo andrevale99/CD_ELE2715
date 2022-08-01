@@ -1,4 +1,4 @@
-# Circuitos_integrado
+# CD - ELE2715
 
 Repositório para o estudo da linguagem VHDL da matéria de Circuitos Digitais (ELE2715) da UFRN. 
 
